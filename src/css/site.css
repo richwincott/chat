@@ -1,0 +1,161 @@
+body {
+    margin: 12px 0px;
+}
+@media (min-width: 992px) {
+    body {
+        margin: 3rem 0;
+    }
+}
+@media (max-width: 991px) {
+    form.no-margin {
+        margin-bottom: 0px;
+    }
+}
+
+input {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: #f9f9f9 !important;
+    border-bottom: 1px solid #ddd !important;
+    border-top: 1px solid #ddd !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+
+input:focus, input:active {
+    background-color: #f4f4f4 !important;
+}
+
+button, .input-group-addon.btn {
+    border-radius: 0px !important;
+    outline: none !important;
+}
+
+.input-group-addon.btn {
+    background-color: #f9f9f9 !important;
+}
+
+.input-group-addon.btn:hover {
+    background-color: #eee !important;
+} 
+
+.input-group-addon:last-child {
+    border-left: 1px red solid !important;
+}
+
+.table {
+    font-size: 14px;
+}
+
+h4 {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+h5 {
+    display: inline-block;
+    margin: 0px;
+}
+
+.nav-pills li a {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.editProfileLink {
+    display: inline-block;
+    margin-top:3px;
+}
+
+.faded {
+    opacity: 0.6;
+    font-size: smaller;
+}
+
+.bubble {
+    background-color:#f3f3f3;
+    border-radius: 4px;
+    padding:6px 8px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+.users-list, .room-list {
+    max-height:calc(100% - 195px);
+    overflow-y: scroll;
+}
+
+.faint {
+    opacity: 0.3;
+}
+
+.sidebar-toggle {
+    float: right;
+    text-decoration: none;
+    color: #888;
+}
+
+.sidebar-toggle:hover {
+    text-decoration: none;
+}
+
+.borderless td, .borderless th {
+    border: none !important;
+}
+
+.messages {
+    height: calc(100% - 90px);
+    overflow-y: scroll;
+    padding-right:12px;
+}
+@media (min-width: 992px) {
+    messages {
+        height: calc(100% - 120px);
+    }
+}
+
+.modal-body {
+    padding: 20px 30px;
+}
+
+.info {
+    font-size:12px;
+    color: #666
+}
+
+a {
+    cursor: pointer;
+}
+
+.avatar {
+    height:40px;
+    width:40px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+@media (max-width: 991px) {
+    .sidebar .top {
+        margin-top: 113px;
+    }
+
+    .sidebar .bottom {
+        position: absolute;
+        top: 15px;
+        width: calc(100% - 30px);
+    }
+}
+
+@media (min-width: 992px) {
+    .full-height-desktop {
+        position: relative; 
+        height: 100%;
+    }
+
+    .bottom {
+        position: absolute; 
+        bottom: 0px;
+        width: calc(100% - 30px);
+    }
+}
