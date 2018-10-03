@@ -19,6 +19,10 @@ app.controller("room.controller", ["$scope", "$state", "$stateParams", "$timeout
 
     socketService.socket().removeListener('messages');
     socketService.socket().removeListener('new-message');
+    socketService.socket().removeListener('edited-message');
+    socketService.socket().removeListener('removed-message');
+    socketService.socket().removeListener('username-change');
+    socketService.socket().removeListener('avatar-change');
 
     vm.messages = [];
     vm.dates = [];
