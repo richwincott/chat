@@ -1,10 +1,11 @@
-app.controller("room.controller", ["$scope", "$state", "$stateParams", "$timeout", "userService", "socketService", function ($scope, $state, $stateParams, $timeout, userService, socketService) {
+app.controller("room.controller", ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "socketService", "config", function ($scope, $http, $state, $stateParams, $timeout, userService, socketService, config) {
     let vm = this;
 
     let notifyMe = false;
     vm.editingMessage = -1;
     vm.me = userService.user;
     vm.showDeleted = false;
+    vm.defaultAvatar = userService.defaultAvatar;
 
     $scope.$watch(() => {return userService.user}, function (newValue, oldValue) {
         vm.me = newValue;
@@ -27,6 +28,10 @@ app.controller("room.controller", ["$scope", "$state", "$stateParams", "$timeout
     vm.messages = [];
     vm.dates = [];
     vm.users = [];
+
+    vm.gif;
+    vm.gif_query = "";
+    vm.giphy_offset = 0;
 
     socketService.socket().on('users', function(data) {
         vm.users = data;
@@ -82,7 +87,36 @@ app.controller("room.controller", ["$scope", "$state", "$stateParams", "$timeout
     socketService.socket().emit('fetch-messages');
     socketService.socket().emit('fetch-users');
 
+    vm.fetchGif = function () {
+        vm.gif = undefined;
+        vm.giphy_offset++;
+        $http.get('http://api.giphy.com/v1/gifs/search?q=' + vm.giphy_query + '&api_key=' + config.giphyApiKey + '&limit=1&offset=' + (vm.giphy_offset - 1))
+            .then((response) => {
+                vm.gif = response.data.data[0];
+            })
+    }
+
+    vm.sendGif = function () {
+        vm.message = vm.gif.images.downsized.url;
+        vm.send();
+        vm.gif = undefined;
+        vm.gif_query = "";
+    }
+
+    vm.cancelGif = function () {
+        vm.gif = undefined;
+        vm.gif_query = "";
+        vm.message = "";
+    }
+
     vm.send = function () {
+        vm.gif = undefined;
+        if (vm.message.indexOf('/giphy ') > -1) {
+            vm.giphy_query = vm.message.split('/giphy ')[1];
+            vm.giphy_offset = 0;
+            vm.fetchGif();
+            return;
+        }
         if (vm.message.length > 0) {
             if (vm.editingMessage > -1) {
                 socketService.socket().emit('edit-message', {

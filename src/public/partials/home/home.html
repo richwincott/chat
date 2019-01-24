@@ -49,7 +49,7 @@
                     <ul class="list-unstyled users-list">
                         <li ng-if="user.online || vm.showOffline" ng-repeat="user in vm.users track by $index" style="margin-bottom:10px; height:40px;" ng-class="{'faint': !user.online}">
                             <div class="pull-left">
-                                <img class="avatar" ng-src="{{user.avatar}}" data-toggle="modal" data-target="#myModal4" ng-click="vm.selected=user" style="height:40px; width:40px; cursor:pointer;" />
+                                <img class="avatar" ng-src="{{user.avatar ? user.avatar : vm.defaultAvatar}}" data-toggle="modal" data-target="#myModal4" ng-click="vm.selected=user" style="height:40px; width:40px; cursor:pointer;" />
                             </div>
                             <h5 ng-style="{color: user.userName.split('/')[1]}">{{user.userName.split('/')[0]}}</h5><br/>
                             <small>
@@ -67,7 +67,7 @@
         <div class="bottom" style="margin-bottom:10px;">
             <br/>
             <div class="pull-left">
-                <img class="avatar" ng-src="{{vm.me.avatar}}" data-toggle="modal" data-target="#myModal4" ng-click="vm.selected=vm.me" style="height:70px; width:70px; cursor:pointer;" />
+                <img class="avatar" ng-src="{{vm.me.avatar ? vm.me.avatar : vm.defaultAvatar}}" data-toggle="modal" data-target="#myModal4" ng-click="vm.selected=vm.me" style="height:70px; width:70px; cursor:pointer;" />
             </div>
             <h4 ng-style="{color: vm.me.userName.split('/')[1]}">{{vm.me.userName.split('/')[0]}}</h4><br/>
             <small>
@@ -115,7 +115,7 @@
             <h4>Edit Profile</h4>
             <br/>
             <form>
-                <img class="avatar" ng-src="{{vm.me.avatar}}" style="height:80px; width:80px;" /><br/><br/>
+                <img class="avatar" ng-src="{{vm.me.avatar ? vm.me.avatar : vm.defaultAvatar}}" style="height:80px; width:80px;" /><br/><br/>
                 <input type='file' class="form-control" ng-model='vm.uploadedAvatarObject' base-sixty-four-input>
             </form>
             <form ng-submit="vm.setName()">
@@ -167,7 +167,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-body text-center">
-                <img ng-src="{{vm.selected.avatar}}" style="max-width:100%" />
+                <img ng-src="{{vm.selected.avatar ? vm.selected.avatar : vm.defaultAvatar}}" style="max-width:100%" />
             </div>
         </div>
     

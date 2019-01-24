@@ -25,6 +25,7 @@ app.controller("home.controller", ["$scope", "$state", "$stateParams", "$timeout
     vm.showAdminLogin = true;
     vm.showOffline = false;
     vm.tabState = "rooms"
+    vm.defaultAvatar = userService.defaultAvatar;
 
     $scope.$watch(() => {return userService.user}, function (newValue, oldValue) {
         vm.me = newValue;
@@ -55,7 +56,7 @@ app.controller("home.controller", ["$scope", "$state", "$stateParams", "$timeout
                     vm.loggedIn = true;
                 }
                 else {
-                    vm.error = "That username is already taken, please try again.";
+                    vm.error = "That username is already taken, please try another.";
                     vm.userName = "";
                 }
                 $scope.$apply();
