@@ -6,7 +6,6 @@ var path = require('path');
 var mongoose = require('mongoose');
 
 var seed = 1000;
-var messages = [];
 var users = {};
 var rooms = ["General"];
 
@@ -66,7 +65,7 @@ seedModel.find({}, function(err, _seeds) {
 
     if (_seeds.length == 0) {
         var newSeedInstance = new seedModel({userId: seed});
-        save("seed", newSeedInstance);
+        save(newSeedInstance);
     }
     else {
         seed = _seeds[0].userId;
@@ -74,11 +73,15 @@ seedModel.find({}, function(err, _seeds) {
     console.log("current seed: " + seed);
 });
 
-messageModel.find({}, function(err, _messages) {
-    if (err) handleError(err);
-    
-    messages = _messages;
-});
+function fetchMessages() {
+    return new Promise((resolve, reject) => {
+        messageModel.find({}, function(err, _messages) {
+            if (err) handleError(err);
+            
+            resolve(_messages);
+        });
+    })
+}
 
 userModel.find({}, function(err, _users) {
     if (err) handleError(err);
@@ -93,7 +96,7 @@ roomModel.find({}, function(err, _rooms) {
 
     if (_rooms.length == 0) {
         var newSeedInstance = new roomModel({name: rooms[0]});
-        save("room", newSeedInstance);
+        save(newSeedInstance);
     }
     else {
         _rooms.forEach(room => {
@@ -104,31 +107,10 @@ roomModel.find({}, function(err, _rooms) {
     }
 });
 
-function save(type, instance) {
-    if (type) {
-        switch (type) {
-            case "seed":
-                instance.save(function (err) {
-                    if (err) return handleError(err);
-                });
-                break;
-            case "message":
-                instance.save(function (err) {
-                    if (err) return handleError(err);
-                });
-                break;
-            case "user":       
-                instance.save(function (err) {
-                    if (err) return handleError(err);
-                });
-                break;
-            case "room":
-                instance.save(function (err) {
-                    if (err) return handleError(err);
-                });
-                break;
-        }
-    }
+function save(instance) {
+    instance.save(function (err) {
+        if (err) return handleError(err);
+    });
 }
 
 function handleError(err) {
@@ -144,23 +126,22 @@ io.on('connection', function(socket){
         console.log("ping")
     });
 
-    socket.on('login', (data) => {
+    socket.on('login', (data, callback) => {
         if (users[data.id]) {
             users[data.id].online = true;
             authenticated();
             socket.userId = data.id;
-            socket.emit('authenticated', users[data.id]);
             io.emit("users", users);
             console.log(data.id + ' connected');
             userModel.find({id: socket.userId}, function (err, users) {
                 if (err) return handleError(err);
                 users[0].online = true;
-                save("user", users[0]);
+                save(users[0]);
             });
-            
+            callback(users[data.id]);
         }
         else {
-            newUser(data);
+            callback(newUser(data));
         }
     });
 
@@ -196,24 +177,32 @@ io.on('connection', function(socket){
         users[seed] = user;
         authenticated();
         socket.userId = seed;
-        socket.emit('authenticated', users[seed]);
         io.emit("users", users);
         console.log(seed + ' connected');
         var newUserInstance = new userModel(user);
-        save("user", newUserInstance);
+        save(newUserInstance);
         seedModel.find({}, function (err, seeds) {
             if (err) return handleError(err);
             seeds[0].userId = seed;
-            save("seed", seeds[0]);
+            save(seeds[0]);
         });
+        return users[seed];
     }
 
-    socket.on("fetch-rooms", function () {
-        socket.emit('rooms', rooms)
+    socket.on("fetch-rooms", function (data, callback) {
+        callback(rooms);
     });
 
-    socket.on("fetch-users", function () {
-        socket.emit('users', users)
+    socket.on("fetch-users", function (data, callback) {
+        callback(users);
+    });
+
+    socket.on("fetch-messages", function (data, callback) {
+        fetchMessages().then((messages) => {
+            callback(messages.filter((message) => {
+                return message.room == users[socket.userId].currentRoom;
+            }));
+        });
     });
 
     function authenticated() {
@@ -226,7 +215,7 @@ io.on('connection', function(socket){
             userModel.find({id: socket.userId}, function (err, users) {
                 if (err) return handleError(err);
                 users[0].userName = data;
-                save("user", users[0]);
+                save(users[0]);
             });
         });        
 
@@ -239,7 +228,7 @@ io.on('connection', function(socket){
             userModel.find({id: socket.userId}, function (err, users) {
                 if (err) return handleError(err);
                 users[0].avatar = data;
-                save("user", users[0]);
+                save(users[0]);
             });
         });
         
@@ -251,7 +240,7 @@ io.on('connection', function(socket){
                 userModel.find({id: socket.userId}, function (err, users) {
                     if (err) return handleError(err);
                     users[0].admin = true;
-                    save("user", users[0]);
+                    save(users[0]);
                 });
                 
                 callback(true);
@@ -261,20 +250,12 @@ io.on('connection', function(socket){
             }
         });
 
-        socket.on("fetch-messages", function () {
-            setTimeout(function () {
-                socket.emit('messages', messages.filter((message) => {
-                    return message.room == users[socket.userId].currentRoom;
-                }))
-            }, 0)
-        });
-
         socket.on('join', function (roomName) {
             if (rooms.indexOf(roomName) == -1) {
                 rooms.push(roomName);
                 io.emit('new-room', roomName);
                 var newRoomInstance = new roomModel({name: roomName});
-                save("room", newRoomInstance);
+                save(newRoomInstance);
             }
             users[socket.userId].currentRoom = roomName;
             io.emit("users", users);
@@ -282,7 +263,7 @@ io.on('connection', function(socket){
             userModel.find({id: socket.userId}, function (err, users) {
                 if (err) return handleError(err);
                 users[0].currentRoom = roomName;
-                save("user", users[0]);
+                save(users[0]);
             });
         })
 
@@ -290,7 +271,7 @@ io.on('connection', function(socket){
             rooms.push(newRoomName);
             io.emit('new-room', newRoomName);
             var newRoomInstance = new roomModel({name: newRoomName});
-            save("room", newRoomInstance);
+            save(newRoomInstance);
         })
 
         socket.on("new-message", function (message) {
@@ -306,37 +287,40 @@ io.on('connection', function(socket){
             if (message.indexOf('.png') > -1 || message.indexOf('.jpg') > -1 || message.indexOf('.jpeg') > -1 || message.indexOf('.gif') > -1 || message.indexOf('data:image/png;base64,') > -1) {
                 newMessage.type = "image";
             }
-            messages.push(newMessage);
             io.to(newMessage.room).emit('new-message', newMessage);
             var newMessageInstance = new messageModel(newMessage);
-            save("message", newMessageInstance);
+            save(newMessageInstance);
         })
 
         socket.on("edit-message", function (data) {
-            var _message = messages.filter((message) => {
-                return message.room == users[socket.userId].currentRoom;
-            })[data.index];
-            _message.message = data.newMessage;
-            _message.edited = true;
-            io.to(users[socket.userId].currentRoom).emit('edited-message', data);
-            messageModel.find({_id: _message._id}, function (err, messages) {
-                if (err) return handleError(err);
-                messages[0].message = data.newMessage;
-                messages[0].edited = true;
-                save("message", messages[0]);
+            fetchMessages().then((messages) => {
+                var _message = messages.filter((message) => {
+                    return message.room == users[socket.userId].currentRoom;
+                })[data.index];
+                _message.message = data.newMessage;
+                _message.edited = true;
+                io.to(users[socket.userId].currentRoom).emit('edited-message', data);
+                messageModel.find({_id: _message._id}, function (err, messages) {
+                    if (err) return handleError(err);
+                    messages[0].message = data.newMessage;
+                    messages[0].edited = true;
+                    save(messages[0]);
+                });
             });
         })
 
         socket.on("remove-message", function (data) {
-            var _message = messages.filter((message) => {
-                return message.room == users[socket.userId].currentRoom;
-            })[data]
-            _message.deleted = true;
-            io.to(users[socket.userId].currentRoom).emit('removed-message', data);
-            messageModel.find({_id: _message._id}, function (err, messages) {
-                if (err) return handleError(err);
-                messages[0].deleted = true;
-                save("message", messages[0]);
+            fetchMessages().then((messages) => {
+                var _message = messages.filter((message) => {
+                    return message.room == users[socket.userId].currentRoom;
+                })[data]
+                _message.deleted = true;
+                io.to(users[socket.userId].currentRoom).emit('removed-message', data);
+                messageModel.find({_id: _message._id}, function (err, messages) {
+                    if (err) return handleError(err);
+                    messages[0].deleted = true;
+                    save("message", messages[0]);
+                });
             });
         })
     }
@@ -349,12 +333,12 @@ io.on('connection', function(socket){
             userModel.find({id: socket.userId}, function (err, users) {
                 if (err) return handleError(err);
                 users[0].online = false;
-                save("user", users[0]);
+                save(users[0]);
             });
         }
     });
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(3003, function(){
+  console.log('listening on *:3003');
 });

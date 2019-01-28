@@ -1,0 +1,31 @@
+<div class="modal-body">
+    <h4>Edit Profile</h4>
+    <br/>
+    <form>
+        <img class="avatar" ng-src="{{$ctrl.me.avatar ? $ctrl.me.avatar : $ctrl.defaultAvatar}}" style="height:80px; width:80px;" /><br/><br/>
+        <input type='file' class="form-control" ng-model='$ctrl.uploadedAvatarObject' base-sixty-four-input>
+    </form>
+    <form ng-submit="$ctrl.setName()">
+        <div class="input-group">
+            <input class="form-control" ng-model="$ctrl.me.userName" />
+            <div class="input-group-addon btn" data-dismiss="modal" ng-click="$ctrl.setName()">
+                Save name
+            </div>
+        </div>
+    </form>
+    <form ng-if="$ctrl.showAdminLogin" ng-submit="$ctrl.checkKey()">
+        <h4>Become an Admin</h4>
+        <br/>
+        <div class="input-group">
+            <input class="form-control" type="password" ng-model="$ctrl.adminKey" placeholder="Enter the admin key" />
+            <div class="input-group-addon btn" ng-click="$ctrl.checkKey()">
+                Go
+            </div>
+        </div>
+        <div class="text-center"><br/><label ng-show="$ctrl.adminError.message.length > 0" class="label" ng-class="{'label-success': $ctrl.adminError.success, 'label-danger': !$ctrl.adminError.success}">{{$ctrl.adminError.message}}</label></div>
+    </form>
+    <div ng-if="!$ctrl.showAdminLogin && $ctrl.me.admin">
+        <br/>
+        <p class="text-center">You are an Admin!</p>
+    </div>
+</div>

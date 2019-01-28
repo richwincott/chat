@@ -1,0 +1,73 @@
+<div><a ng-if="$ctrl.me.admin" ng-click="$ctrl.toggleDeleted()"><span ng-if="$ctrl.showDeleted">Hide</span><span ng-if="!$ctrl.showDeleted">Show</span> deleted</a></div>
+<br/>
+<ul class="list-unstyled messages">
+    <li ng-repeat="date in $ctrl.dates">
+        <hr />
+        <p class="text-center">{{date | date:'dd-MM-yyyy'}}</p>
+        <table class="table borderless">
+            <tr ng-if="!message.deleted || ($ctrl.me.admin && $ctrl.showDeleted)" ng-repeat="message in $ctrl.messages | filter:date track by $index">
+                <td>
+                    <div class="col-xs-8 bubble" ng-class="{'col-xs-offset-4' : $ctrl.me.id == message.userId, 'faint' : message.deleted}">
+                        <div class="pull-left"><img class="avatar" ng-src="{{$ctrl.users[message.userId].avatar ? $ctrl.users[message.userId].avatar : $ctrl.defaultAvatar}}" /></div>
+                        <div class="pull-right text-right">{{message.dateTime | date:'dd/MM/yyyy HH:mm:ss'}}<br/>
+                            <a ng-if="$ctrl.me.id == message.userId" ng-click="$ctrl.editMessage(message)">Edit</a>
+                            <a ng-if="$ctrl.me.admin" ng-click="$ctrl.removeMessage(message)">Delete</a>
+                        </div>
+                        <span ng-style="{color: $ctrl.users[message.userId].userName.split('/')[1]}">{{$ctrl.users[message.userId].userName.split('/')[0]}}</span><br/>
+                        <div ng-if="message.type == 'text'">{{message.message}} <span ng-if="message.edited" class="faint">(edited)</span></div>
+                        <div ng-if="message.type == 'image'"><img ng-src="{{message.message}}" data-toggle="modal" data-target="#myModal5" ng-click="$ctrl.selected=message" style="cursor:pointer; max-width:100%; margin-top:5px;" /></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </li>
+    <li ng-if="$ctrl.messages.length == 0" class="text-center">
+        <br/><br/>
+        <p>There are no messages in this room yet..</p>
+    </li>
+</ul>
+
+<form ng-submit="$ctrl.send()" class="no-margin bottom">
+    <div class="giphy-container" ng-if="$ctrl.gif">
+        <div class="float: left">
+            <img class="gif" ng-src="{{$ctrl.gif.images.fixed_width.url}}" />
+        </div>
+        {{$ctrl.gif.title}}
+        <br/>
+        <button class="btn btn-primary" ng-click="$ctrl.sendGif()">Send</button>
+        <button class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
+        <button class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
+    </div>
+    <div class="input-group">
+        <input class="form-control" ng-model="$ctrl.message" placeholder="Type a message or paste an image url, /giphy {search} works too!" />
+        <div class="input-group-addon btn" ng-click="$ctrl.openUploadDialog()">
+            <input class="pictureUpload" type='file' style="display:none;" ng-model='$ctrl.uploadedPictureObject' base-sixty-four-input>
+            <span>Upload Picture</span>
+        </div>
+        <div class="input-group-addon btn" ng-click="$ctrl.send()">
+            <span ng-if="$ctrl.editingMessage == -1">Send</span>
+            <span ng-if="$ctrl.editingMessage > -1">Save</span>
+        </div>
+    </div>
+</form>
+
+<!-- Modal -->
+<div id="myModal5" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p class="text-center">
+                    <span ng-style="{color: $ctrl.users[$ctrl.selected.userId].userName.split('/')[1]}">{{$ctrl.users[$ctrl.selected.userId].userName.split('/')[0]}}</span>
+                    -
+                    {{$ctrl.selected.dateTime | date:'dd/MM/yyyy HH:mm:ss'}}
+                </p>
+                <div style="overflow:scroll">
+                    <img ng-src="{{$ctrl.selected.message}}" />
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</div>

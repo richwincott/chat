@@ -1,0 +1,12 @@
+<div class="modal-body">
+    <h4>Add a room...</h4>
+    <br/>
+    <form ng-submit="$ctrl.createRoom()">
+        <div class="input-group">
+            <input class="form-control" ng-model="$ctrl.newRoomName" />
+            <div class="input-group-addon btn" data-dismiss="modal" ng-click="$ctrl.createRoom()">
+                Create
+            </div>
+        </div>
+    </form>
+</div>

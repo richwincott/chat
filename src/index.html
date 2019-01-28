@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <base href="/">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Chat</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+        <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.chunks.styles.css %>" />
+    </head>
+
+    <body>
+        <div id="app" class="container">
+            <div ui-view></div>
+        </div>
+
+        <script src="<%= htmlWebpackPlugin.files.chunks.vendor.entry %>" type="text/javascript"></script>
+        <script src="<%= htmlWebpackPlugin.files.chunks.app.entry %>" type="text/javascript"></script>
+    </body>
+</html>

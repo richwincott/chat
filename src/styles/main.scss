@@ -5,7 +5,11 @@ body {
     body {
         margin: 3rem 0;
     }
+    .sidebar.modal-body {
+        padding: 0px !important;
+    }
 }
+
 @media (max-width: 991px) {
     form.no-margin {
         margin-bottom: 0px;
@@ -110,7 +114,7 @@ h5 {
     padding-right:12px;
 }
 @media (min-width: 992px) {
-    messages {
+    .messages {
         height: calc(100% - 120px);
     }
 }
@@ -133,29 +137,4 @@ a {
     width:40px;
     border-radius: 5px;
     margin-right: 10px;
-}
-
-@media (max-width: 991px) {
-    .sidebar .top {
-        margin-top: 113px;
-    }
-
-    .sidebar .bottom {
-        position: absolute;
-        top: 15px;
-        width: calc(100% - 30px);
-    }
-}
-
-@media (min-width: 992px) {
-    .full-height-desktop {
-        position: relative; 
-        height: 100%;
-    }
-
-    .bottom {
-        position: absolute; 
-        bottom: 0px;
-        width: calc(100% - 30px);
-    }
 }
