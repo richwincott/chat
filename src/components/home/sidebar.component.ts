@@ -1,5 +1,3 @@
-import { ui } from "angular";
-
 let sidebarHtml = require('./sidebar.html');
 let editProfileHTML = require('./editProfile.html');
 let addRoomHTML = require('./addRoom.html');
@@ -19,7 +17,7 @@ class SidebarCtrl {
         private chatService,
         private $state: ng.ui.IStateService,
         private $stateParams: ng.ui.IStateParamsService,
-        private $uibModal: ui.bootstrap.IModalService
+        private $uibModal: ng.ui.bootstrap.IModalService
     ) {}
 
     get me() {

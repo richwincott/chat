@@ -30,14 +30,15 @@
 
     <form ng-submit="$ctrl.send()" class="no-margin bottom">
         <div class="giphy-container" ng-if="$ctrl.gif">
-            <div class="float: left">
+            <div class="text-center">
+                {{$ctrl.gif.title}}
+                <br/>
                 <img class="gif" ng-src="{{$ctrl.gif.images.fixed_width.url}}" />
+                <br/>
+                <button class="btn btn-primary" ng-click="$ctrl.sendGif()">Send</button>
+                <button class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
+                <button class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
             </div>
-            {{$ctrl.gif.title}}
-            <br/>
-            <button class="btn btn-primary" ng-click="$ctrl.sendGif()">Send</button>
-            <button class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
-            <button class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
         </div>
         <div class="input-group">
             <input class="form-control" ng-model="$ctrl.message" placeholder="Type a message or paste an image url, /giphy {search} works too!" />

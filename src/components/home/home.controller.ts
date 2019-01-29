@@ -1,5 +1,3 @@
-import { ui } from "angular";
-
 export default class HomeCtrl {
     public loggedIn = false;
     public isLoading = false;
@@ -8,14 +6,15 @@ export default class HomeCtrl {
     public defaultAvatar = this.userService.defaultAvatar;
     public loginError;
     
-    static $inject = ["$scope", "userService", "chatService", "socketService", "$uibModal"];
+    static $inject = ["$scope", "$state", "userService", "chatService", "socketService", "$uibModal"];
 
     constructor(
         private $scope: ng.IScope,
+        private $state: ng.ui.IStateService,
         private userService,
         private chatService,
         private socketService,
-        private $uibModal: ui.bootstrap.IModalService
+        private $uibModal: ng.ui.bootstrap.IModalService
     ) {
     
     }
@@ -33,6 +32,11 @@ export default class HomeCtrl {
     }
 
     $onInit() {
+        if (this.$state.current.name === "index.home") {
+            this.me.currentRoom = "General";
+            this.$state.go('index.home.room', {roomName: "General"});
+        }
+
         if (localStorage.getItem('id') !== null) {
             this.isLoading = true;
             this.socketService.request('login', { id: parseInt(localStorage.getItem('id')) }).then((data) => {

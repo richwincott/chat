@@ -4,9 +4,10 @@ export default class ChatService {
     public rooms;
     public dates = [];
 
-    static $inject = ["socketService"];
+    static $inject = ["$rootScope", "socketService"];
 
     constructor(
+        private $rootScope,
         private socketService
     ) {
         // requests
@@ -23,30 +24,36 @@ export default class ChatService {
         // listeners
         this.socketService.socket().on('users', (data) => {
             this.users = data;
+            this.$rootScope.$apply();
         });
 
         this.socketService.socket().on('rooms', (data) => {
             this.rooms = data;
+            this.$rootScope.$apply();
         });
 
         this.socketService.socket().on('new-room', (data) => {
             this.rooms.push(data);
+            this.$rootScope.$apply();
         });
 
         this.socketService.socket().on('new-message', (data) => {
             this.messages.push(data);
             this.formatMessages();
+            this.$rootScope.$apply();
         })
 
         this.socketService.socket().on('edited-message', (data) => {
             this.messages[data.index].message = data.newMessage;
             this.messages[data.index].edited = true;
             this.formatMessages();
+            this.$rootScope.$apply();
         })
 
         this.socketService.socket().on('removed-message', (data) => {
             this.messages[data].deleted = true;
             this.formatMessages();
+            this.$rootScope.$apply();
         })
 
 
@@ -58,6 +65,7 @@ export default class ChatService {
                     this.users[key].userName = data.newName;
                 }
             };
+            this.$rootScope.$apply();
         })
 
         this.socketService.socket().on('avatar-change', (data) => {
@@ -66,6 +74,7 @@ export default class ChatService {
                     this.users[key].avatar = data.newAvatar;
                 }
             };
+            this.$rootScope.$apply();
         })
     }
 

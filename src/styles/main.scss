@@ -139,3 +139,15 @@ a {
     border-radius: 5px;
     margin-right: 10px;
 }
+
+.giphy-container {
+    display: inline-block;
+    background-color: #ddd;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+    .gif {
+        margin: 4px 0px;
+    }
+}

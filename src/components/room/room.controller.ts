@@ -1,5 +1,3 @@
-import { IHttpResponse, ui } from "angular";
-
 let viewImageHTML = require('./viewImage.html');
 
 interface IGiphyResponse {
@@ -38,7 +36,7 @@ export default class RoomCtrl {
         private chatService,
         private socketService,
         private config: IConfig,
-        private $uibModal: ui.bootstrap.IModalService
+        private $uibModal: ng.ui.bootstrap.IModalService
     ) {
     
     }
@@ -77,7 +75,7 @@ export default class RoomCtrl {
         this.gif = undefined;
         this.giphy_offset++;
         this.$http.get('http://api.giphy.com/v1/gifs/search?q=' + this.giphy_query + '&api_key=' + this.config.giphyApiKey + '&limit=1&offset=' + (this.giphy_offset - 1))
-            .then((response: IHttpResponse<IGiphyResponse>) => {
+            .then((response: ng.IHttpResponse<IGiphyResponse>) => {
                 this.gif = response.data.data[0];
             })
     }
