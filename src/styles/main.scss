@@ -50,6 +50,33 @@ button, .input-group-addon.btn {
     border-left: 1px red solid !important;
 }
 
+.btn-default {
+    border: 0px;
+    border-bottom: 2px solid #ddd;
+    padding: 7px 12px;
+    margin-bottom: 5px;
+
+    &.selected, &:active, &:active:focus {
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        background-color: #f3f3f3;
+        border-bottom: 2px solid #d9534f;
+    }
+}
+
+.btn-red {
+    @extend .btn-default;
+
+    &.selected {
+        color: #f9f9f9;
+    }
+
+    &.selected, &:active {
+        background-color: #d43f3a;
+        border-bottom: 2px solid #d43f3a;
+    }
+}
+
 .table {
     font-size: 14px;
 }
