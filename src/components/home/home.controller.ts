@@ -1,62 +1,46 @@
+import { ui } from "angular";
+
 export default class HomeCtrl {
     public loggedIn = false;
-    public isLoading = true;
+    public isLoading = false;
     public userName;
-    public me = this.userService.user;
-    public rooms = [];
-    public users = [];
-    
+
     public defaultAvatar = this.userService.defaultAvatar;
-    public error;
+    public loginError;
     
-    static $inject = ["$scope", "$timeout", "userService", "socketService", "$uibModal"];
+    static $inject = ["$scope", "userService", "chatService", "socketService", "$uibModal"];
 
     constructor(
-        private $scope,
-        private $timeout,
+        private $scope: ng.IScope,
         private userService,
+        private chatService,
         private socketService,
-        private $uibModal
+        private $uibModal: ui.bootstrap.IModalService
     ) {
     
     }
 
+    get me() {
+        return this.userService.user;
+    }
+
+    get users() {
+        return this.chatService.users;
+    }
+
+    get rooms() {
+        return this.chatService.rooms;
+    }
+
     $onInit() {
-        // important first clear any listeners registered in this controller to maintain a single instance of each
-        this.socketService.socket().removeListener('new-room');
-        this.socketService.socket().removeListener('users');
-
-        this.ping();
-
-        this.$scope.$watch(() => {return this.userService.user}, (newValue, oldValue) => {
-            this.me = newValue;
-        })
-    
-        this.socketService.request('fetch-rooms').then((rooms) => {
-            this.rooms = rooms;
-        });
-        this.socketService.request('fetch-users').then((users) => {
-            this.users = users;
-        });
-
-        this.socketService.socket().on('users', (data) => {
-            this.users = data;
-            this.$scope.$apply();
-        })
-    
         if (localStorage.getItem('id') !== null) {
+            this.isLoading = true;
             this.socketService.request('login', { id: parseInt(localStorage.getItem('id')) }).then((data) => {
                 this.loggedIn = true;
                 this.isLoading = false;
                 
                 localStorage.setItem('id', data.id);
-    
                 this.userService.setUser(data);
-            
-                this.socketService.socket().on('new-room', (data) => {
-                    this.rooms.push(data);
-                    this.$scope.$apply();
-                })
             });
         }
     }
@@ -73,22 +57,21 @@ export default class HomeCtrl {
         });
     }
 
-    private ping() {
-        this.$timeout(() => {
-            this.socketService.socket().emit('ping');
-            this.ping();
-        }, 5000);
-    }
-
     public login() {
         if (this.userName && this.userName.length > 0) {
+            this.isLoading = true;
+            this.loginError = "";
             this.socketService.socket().emit('new-user', { username: this.userName }, (data) => {
                 if (data) {
                     this.loggedIn = true;
                     this.isLoading = false;
+
+                    localStorage.setItem('id', data.id);
+                    this.userService.setUser(data);
                 }
                 else {
-                    this.error = "That username is already taken, please try another.";
+                    this.isLoading = false;
+                    this.loginError = "That username is already taken, please try another.";
                     this.userName = "";
                 }
                 this.$scope.$apply();

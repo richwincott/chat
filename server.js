@@ -6,7 +6,6 @@ var path = require('path');
 var mongoose = require('mongoose');
 
 var seed = 1000;
-var users = {};
 var rooms = ["General"];
 
 //Import the mongoose module
@@ -83,13 +82,45 @@ function fetchMessages() {
     })
 }
 
-userModel.find({}, function(err, _users) {
-    if (err) handleError(err);
-    
-    _users.forEach(user => {
-        users[user.id] = user;
-    });
-});
+function fetchUsers() {
+    return new Promise((resolve, reject) => {
+        userModel.find({}, function(err, _users) {
+            if (err) handleError(err);
+            
+            let users = {};
+
+            _users.forEach(user => {
+                users[user.id] = user;
+            });
+
+            resolve(users);
+        });
+    })
+}
+
+function fetchRooms() {
+    return new Promise((resolve, reject) => {
+        roomModel.find({}, function(err, _rooms) {
+            if (err) handleError(err);
+
+            let rooms = ["General"];
+        
+            if (_rooms.length == 0) {
+                var newSeedInstance = new roomModel({name: rooms[0]});
+                save(newSeedInstance);
+            }
+            else {
+                _rooms.forEach(room => {
+                    if (room.name != "General") {
+                        rooms.push(room.name);
+                    }
+                });
+            }
+
+            resolve(rooms);
+        });
+    })
+}
 
 roomModel.find({}, function(err, _rooms) {
     if (err) handleError(err);
@@ -121,221 +152,253 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 io.on('connection', function(socket){
 
-    socket.on('ping', () => {
-        socket.emit("pong");
-        console.log("ping")
-    });
-
     socket.on('login', (data, callback) => {
-        if (users[data.id]) {
-            users[data.id].online = true;
-            authenticated();
-            socket.userId = data.id;
-            io.emit("users", users);
-            console.log(data.id + ' connected');
-            userModel.find({id: socket.userId}, function (err, users) {
-                if (err) return handleError(err);
-                users[0].online = true;
-                save(users[0]);
-            });
-            callback(users[data.id]);
-        }
-        else {
-            callback(newUser(data));
-        }
+        fetchUsers().then((users) => {
+            if (users[data.id]) {
+                users[data.id].online = true;
+                authenticated();
+                socket.userId = data.id;
+                io.emit("users", users);
+                console.log(data.id + ' connected');
+                userModel.find({id: socket.userId}, function (err, users) {
+                    if (err) return handleError(err);
+                    users[0].online = true;
+                    save(users[0]);
+                });
+                callback(users[data.id]);
+            }
+            else {
+                newUser(data).then((user) => {
+                    callback(user);
+                })
+            }
+        })
     });
 
     socket.on('new-user', (data, callback) => {
-        if (!userExists(data.username)) {
-            newUser(data);
-            callback(true);
-        }
-        else {
-            callback(false);
-        }
+        userExists(data.username).then((found) => {
+            if (!found) {
+                newUser(data).then((user) => {
+                    callback(user);
+                })
+            }
+            else {
+                callback();
+            }
+        })
     });
 
     function userExists(userNameToCheck) {
-        let found = false;
-        for (let key in users) {
-            if (users[key].userName.split("/")[0].toLowerCase() == userNameToCheck.toLowerCase()) {
-                found = true;
-            }
-        };
-        return found;
+        return new Promise((resolve, reject) => {
+            fetchUsers().then((users) => {
+                let found = false;
+                for (let key in users) {
+                    if (users[key].userName.split("/")[0].toLowerCase() == userNameToCheck.toLowerCase()) {
+                        found = true;
+                    }
+                };
+                resolve(found);
+            })
+        })
     }
 
     function newUser(data) {
-        seed++
-        var user = {
-            id: seed,
-            userName: data.username ? data.username : "Anon",
-            avatar: null,
-            online: true,
-            admin: false
-        };
-        users[seed] = user;
-        authenticated();
-        socket.userId = seed;
-        io.emit("users", users);
-        console.log(seed + ' connected');
-        var newUserInstance = new userModel(user);
-        save(newUserInstance);
-        seedModel.find({}, function (err, seeds) {
-            if (err) return handleError(err);
-            seeds[0].userId = seed;
-            save(seeds[0]);
-        });
-        return users[seed];
+        return new Promise((resolve, reject) => {
+            fetchUsers().then((users) => {
+                seed++
+                var user = {
+                    id: seed,
+                    userName: data.username ? data.username : "Anon",
+                    avatar: null,
+                    online: true,
+                    admin: false
+                };
+                users[seed] = user;
+                authenticated();
+                socket.userId = seed;
+                io.emit("users", users);
+                console.log(seed + ' connected');
+                var newUserInstance = new userModel(user);
+                save(newUserInstance);
+                seedModel.find({}, function (err, seeds) {
+                    if (err) return handleError(err);
+                    seeds[0].userId = seed;
+                    save(seeds[0]);
+                });
+                resolve(users[seed]);
+            })
+        })
     }
 
     socket.on("fetch-rooms", function (data, callback) {
-        callback(rooms);
+        fetchRooms().then((rooms) => {
+            callback(rooms);
+        });
     });
 
     socket.on("fetch-users", function (data, callback) {
-        callback(users);
+        fetchUsers().then((users) => {
+            callback(users);
+        });
     });
 
     socket.on("fetch-messages", function (data, callback) {
         fetchMessages().then((messages) => {
-            callback(messages.filter((message) => {
-                return message.room == users[socket.userId].currentRoom;
-            }));
+            fetchUsers().then((users) => {
+                callback(messages.filter((message) => {
+                    return message.room == users[socket.userId].currentRoom;
+                }));
+            })
         });
     });
 
     function authenticated() {
         socket.on("set-name", function (data) {
-            users[socket.userId].userName = data;
-            io.emit('username-change', {
-                userId: socket.userId,
-                newName: users[socket.userId].userName
-            });
-            userModel.find({id: socket.userId}, function (err, users) {
-                if (err) return handleError(err);
-                users[0].userName = data;
-                save(users[0]);
-            });
+            fetchUsers().then((users) => {
+                users[socket.userId].userName = data;
+                io.emit('username-change', {
+                    userId: socket.userId,
+                    newName: users[socket.userId].userName
+                });
+                userModel.find({id: socket.userId}, function (err, users) {
+                    if (err) return handleError(err);
+                    users[0].userName = data;
+                    save(users[0]);
+                });
+            })
         });        
 
         socket.on("set-avatar", function (data) {
-            users[socket.userId].avatar = data;
-            io.emit('avatar-change', {
-                userId: socket.userId,
-                newAvatar: users[socket.userId].avatar
-            });
-            userModel.find({id: socket.userId}, function (err, users) {
-                if (err) return handleError(err);
-                users[0].avatar = data;
-                save(users[0]);
-            });
+            fetchUsers().then((users) => {
+                users[socket.userId].avatar = data;
+                io.emit('avatar-change', {
+                    userId: socket.userId,
+                    newAvatar: users[socket.userId].avatar
+                });
+                userModel.find({id: socket.userId}, function (err, users) {
+                    if (err) return handleError(err);
+                    users[0].avatar = data;
+                    save(users[0]);
+                });
+            })
         });
         
         socket.on("check-key", function(key, callback) {
-            if (key === "ninjacat") {
-                console.log(users[socket.userId].userName + " became an admin!")
-                users[socket.userId].admin = true;
-                io.emit("users", users);
-                userModel.find({id: socket.userId}, function (err, users) {
-                    if (err) return handleError(err);
-                    users[0].admin = true;
-                    save(users[0]);
-                });
-                
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
+            fetchUsers().then((users) => {
+                if (key === "ninjacat") {
+                    console.log(users[socket.userId].userName + " became an admin!")
+                    users[socket.userId].admin = true;
+                    io.emit("users", users);
+                    userModel.find({id: socket.userId}, function (err, users) {
+                        if (err) return handleError(err);
+                        users[0].admin = true;
+                        save(users[0]);
+                    });
+                    
+                    callback(true);
+                }
+                else {
+                    callback(false);
+                }
+            })
         });
 
         socket.on('join', function (roomName) {
-            if (rooms.indexOf(roomName) == -1) {
-                rooms.push(roomName);
-                io.emit('new-room', roomName);
-                var newRoomInstance = new roomModel({name: roomName});
-                save(newRoomInstance);
-            }
-            users[socket.userId].currentRoom = roomName;
-            io.emit("users", users);
-            socket.join(roomName);
-            userModel.find({id: socket.userId}, function (err, users) {
-                if (err) return handleError(err);
-                users[0].currentRoom = roomName;
-                save(users[0]);
-            });
+            fetchRooms().then((rooms) => {
+                fetchUsers().then((users) => {
+                    if (rooms.indexOf(roomName) == -1) {
+                        io.emit('new-room', roomName);
+                        var newRoomInstance = new roomModel({name: roomName});
+                        save(newRoomInstance);
+                    }
+                    users[socket.userId].currentRoom = roomName;
+                    io.emit("users", users);
+                    socket.join(roomName);
+                    userModel.find({id: socket.userId}, function (err, users) {
+                        if (err) return handleError(err);
+                        users[0].currentRoom = roomName;
+                        save(users[0]);
+                    });
+                })
+            })
         })
 
         socket.on("new-room", function (newRoomName) {
-            rooms.push(newRoomName);
             io.emit('new-room', newRoomName);
             var newRoomInstance = new roomModel({name: newRoomName});
             save(newRoomInstance);
         })
 
         socket.on("new-message", function (message) {
-            const newMessage = {
-                userId: socket.userId,
-                message: message,
-                type: "text",
-                dateTime: new Date(),
-                room: users[socket.userId].currentRoom,
-                edited: false,
-                deleted: false
-            };
-            if (message.indexOf('.png') > -1 || message.indexOf('.jpg') > -1 || message.indexOf('.jpeg') > -1 || message.indexOf('.gif') > -1 || message.indexOf('data:image/png;base64,') > -1) {
-                newMessage.type = "image";
-            }
-            io.to(newMessage.room).emit('new-message', newMessage);
-            var newMessageInstance = new messageModel(newMessage);
-            save(newMessageInstance);
+            fetchUsers().then((users) => {
+                const newMessage = {
+                    userId: socket.userId,
+                    message: message,
+                    type: "text",
+                    dateTime: new Date(),
+                    room: users[socket.userId].currentRoom,
+                    edited: false,
+                    deleted: false
+                };
+                if (message.indexOf('.png') > -1 || message.indexOf('.jpg') > -1 || message.indexOf('.jpeg') > -1 || message.indexOf('.gif') > -1 || message.indexOf('data:image/png;base64,') > -1) {
+                    newMessage.type = "image";
+                }
+                io.to(newMessage.room).emit('new-message', newMessage);
+                var newMessageInstance = new messageModel(newMessage);
+                save(newMessageInstance);
+            })
         })
 
         socket.on("edit-message", function (data) {
             fetchMessages().then((messages) => {
-                var _message = messages.filter((message) => {
-                    return message.room == users[socket.userId].currentRoom;
-                })[data.index];
-                _message.message = data.newMessage;
-                _message.edited = true;
-                io.to(users[socket.userId].currentRoom).emit('edited-message', data);
-                messageModel.find({_id: _message._id}, function (err, messages) {
-                    if (err) return handleError(err);
-                    messages[0].message = data.newMessage;
-                    messages[0].edited = true;
-                    save(messages[0]);
-                });
+                fetchUsers().then((users) => {
+                    var _message = messages.filter((message) => {
+                        return message.room == users[socket.userId].currentRoom;
+                    })[data.index];
+                    _message.message = data.newMessage;
+                    _message.edited = true;
+                    io.to(users[socket.userId].currentRoom).emit('edited-message', data);
+                    messageModel.find({_id: _message._id}, function (err, messages) {
+                        if (err) return handleError(err);
+                        messages[0].message = data.newMessage;
+                        messages[0].edited = true;
+                        save(messages[0]);
+                    });
+                })
             });
         })
 
         socket.on("remove-message", function (data) {
             fetchMessages().then((messages) => {
-                var _message = messages.filter((message) => {
-                    return message.room == users[socket.userId].currentRoom;
-                })[data]
-                _message.deleted = true;
-                io.to(users[socket.userId].currentRoom).emit('removed-message', data);
-                messageModel.find({_id: _message._id}, function (err, messages) {
-                    if (err) return handleError(err);
-                    messages[0].deleted = true;
-                    save("message", messages[0]);
-                });
+                fetchUsers().then((users) => {
+                    var _message = messages.filter((message) => {
+                        return message.room == users[socket.userId].currentRoom;
+                    })[data]
+                    _message.deleted = true;
+                    io.to(users[socket.userId].currentRoom).emit('removed-message', data);
+                    messageModel.find({_id: _message._id}, function (err, messages) {
+                        if (err) return handleError(err);
+                        messages[0].deleted = true;
+                        save(messages[0]);
+                    });
+                })
             });
         })
     }
 
     socket.on('disconnect', function() {
-        console.log(socket.userId + ' disconnected');
-        if (users[socket.userId]) {
-            users[socket.userId].online = false;
-            io.emit("users", users);
-            userModel.find({id: socket.userId}, function (err, users) {
-                if (err) return handleError(err);
-                users[0].online = false;
-                save(users[0]);
-            });
-        }
+        fetchUsers().then((users) => {
+            console.log(socket.userId + ' disconnected');
+            if (users[socket.userId]) {
+                users[socket.userId].online = false;
+                io.emit("users", users);
+                userModel.find({id: socket.userId}, function (err, users) {
+                    if (err) return handleError(err);
+                    users[0].online = false;
+                    save(users[0]);
+                });
+            }
+        })
     });
 });
 

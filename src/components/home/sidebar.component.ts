@@ -1,3 +1,5 @@
+import { ui } from "angular";
+
 let sidebarHtml = require('./sidebar.html');
 let editProfileHTML = require('./editProfile.html');
 let addRoomHTML = require('./addRoom.html');
@@ -8,46 +10,34 @@ class SidebarCtrl {
     public tabState = "rooms";
     public showAdminLogin = true;
     public roomName = this.$stateParams.roomName;
-    public _me = this.userService.user;
-    public rooms = [];
-    public users = [];
+    public defaultAvatar = this.userService.defaultAvatar;
 
-    static $inject = ['$scope', 'userService', 'socketService', '$state', '$stateParams', '$uibModal'];
+    static $inject = ['userService', 'chatService', '$state', '$stateParams', '$uibModal'];
 
     constructor(
-        private $scope,
         private userService,
-        private socketService,
-        private $state,
-        private $stateParams,
-        private $uibModal
+        private chatService,
+        private $state: ng.ui.IStateService,
+        private $stateParams: ng.ui.IStateParamsService,
+        private $uibModal: ui.bootstrap.IModalService
     ) {}
 
     get me() {
-        return this._me;
+        return this.userService.user;
     }
 
-    set me(value) {
-        this._me = value;
+    get users() {
+        return this.chatService.users;
+    }
+
+    get rooms() {
+        return this.chatService.rooms;
     }
 
     $onInit() {
         if (this.me.admin) {
             this.showAdminLogin = false;
         };
-
-        this.socketService.request('fetch-rooms').then((rooms) => {
-            this.rooms = rooms;
-        });
-
-        this.socketService.request('fetch-users').then((users) => {
-            this.users = users;
-        });
-
-        this.socketService.socket().on('new-room', (data) => {
-            this.rooms.push(data);
-            this.$scope.$apply();
-        })
     }
 
     public openEditProfile() {

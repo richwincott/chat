@@ -1,112 +1,83 @@
+import { IHttpResponse, ui } from "angular";
+
+let viewImageHTML = require('./viewImage.html');
+
+interface IGiphyResponse {
+    data: {
+        data: {}[]
+    }
+}
+
+interface IConfig {
+    giphyApiKey: string
+}
+
 export default class RoomCtrl {
     public notifyMe = false;
     public editingMessage = -1;
-    public me;
     public showDeleted = false;
     public defaultAvatar;
 
     public message;
-    public messages = [];
-    public dates = [];
-    public users = [];
+    public uploadedPictureObject = {
+        base64: ""
+    }
 
     public gif;
     public giphy_query = "";
     public giphy_offset = 0;
 
-    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "socketService", "config"];
+    static $inject = ["$scope", "$http", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "$uibModal"];
 
     constructor(
-        private $scope,
-        private $http,
-        private $state,
-        private $stateParams,
-        private $timeout,
+        private $scope: ng.IScope,
+        private $http: ng.IHttpService,
+        private $stateParams: ng.ui.IStateParamsService,
+        private $timeout: ng.ITimeoutService,
         private userService,
+        private chatService,
         private socketService,
-        private config
+        private config: IConfig,
+        private $uibModal: ui.bootstrap.IModalService
     ) {
     
     }
 
+    get me() {
+        return this.userService.user;
+    }
+
+    get users() {
+        return this.chatService.users;
+    }
+
+    get dates() {
+        return this.chatService.dates;
+    }
+
+    get messages() {
+        return this.chatService.messages;
+    }
+
     $onInit() {
-        // important first clear any listeners registered in this controller to maintain a single instance of each
-        this.socketService.socket().removeListener('new-message');
-        this.socketService.socket().removeListener('edited-message');
-        this.socketService.socket().removeListener('removed-message');
-        this.socketService.socket().removeListener('username-change');
-        this.socketService.socket().removeListener('avatar-change');
-
-        this.me = this.userService.user;
         this.defaultAvatar = this.userService.defaultAvatar;
-   
-        this.$scope.$watch(() => {return this.userService.user}, (newValue, oldValue) => {
-            this.me = newValue;
-        })
 
-        this.$scope.$watch('this.uploadedPictureObject', (newValue, oldValue) => {
+        this.$scope.$watch(() => this.uploadedPictureObject, (newValue, oldValue) => {
             if (newValue != oldValue) {
                 this.message = 'data:image/png;base64,' + newValue.base64;
                 this.send();
             }
         })        
 
-        this.socketService.socket().on('new-message', (data) => {
-            this.messages.push(data);
-            this.formatMessages();
-            this.$scope.$apply();
-            this.scrollToBottom();
-        })
-
-        this.socketService.socket().on('edited-message', (data) => {
-            this.messages[data.index].message = data.newMessage;
-            this.messages[data.index].edited = true;
-            this.formatMessages();
-            this.$scope.$apply();
-        })
-
-        this.socketService.socket().on('removed-message', (data) => {
-            this.messages[data].deleted = true;
-            this.formatMessages();
-            this.$scope.$apply();
-        })
-
-        this.socketService.socket().on('username-change', (data) => {
-            for (let key in this.users) {
-                if (key == data.userId) {
-                    this.users[key].userName = data.newName;
-                }
-            };
-            this.$scope.$apply();
-        })
-
-        this.socketService.socket().on('avatar-change', (data) => {
-            for (let key in this.users) {
-                if (key == data.userId) {
-                    this.users[key].avatar = data.newAvatar;
-                }
-            };
-            this.$scope.$apply();
-        })
-
         this.socketService.socket().emit('join', this.$stateParams.roomName);
-
-        this.socketService.request('fetch-messages').then((data) => {
-            this.messages = data;
-            this.formatMessages();
-            this.scrollToBottom();
-        });
-
-        this.socketService.request('fetch-users').then((users) => {
-            this.users = users;
-        });
+        this.chatService.fetchMessages();
     }
 
     public fetchGif() {
         this.gif = undefined;
         this.giphy_offset++;
         this.$http.get('http://api.giphy.com/v1/gifs/search?q=' + this.giphy_query + '&api_key=' + this.config.giphyApiKey + '&limit=1&offset=' + (this.giphy_offset - 1))
-            .then((response) => {
+            .then((response: IHttpResponse<IGiphyResponse>) => {
                 this.gif = response.data.data[0];
             })
     }
@@ -159,22 +130,33 @@ export default class RoomCtrl {
 
     public toggleDeleted() {
         this.showDeleted = !this.showDeleted
-        this.formatMessages(true);
+        this.chatService.formatMessages(true);
     }
 
     public openUploadDialog() {
         document.getElementsByClassName(".pictureUpload").item[0].click();
     }
 
-    formatMessages = (clear?) => {
-        if (clear) {
-            this.dates = [];
-        }
-        this.messages.forEach((message) => {
-            if ((!message.deleted || (this.me.admin && this.showDeleted)) && this.dates.indexOf(message.dateTime.split('T')[0]) == -1) {
-                this.dates.push(message.dateTime.split('T')[0]);
+    public openImage(message) {
+        this.$uibModal.open({
+            animation: true,
+            templateUrl: viewImageHTML,
+            size: 'sm',
+            bindToController: true,
+            controllerAs: '$ctrl',
+            resolve: {
+                selected: message,
+                users: this.users
+            },
+            controller: function(selected, users) {
+                this.users = users;
+                this.selected = selected;
             }
-        })
+        }).result.then(() => {
+            // closed the modal
+        }, () => {
+            // cancelled the modal
+        });
     }
 
     scrollToBottom = () => {

@@ -8,16 +8,16 @@
                     Login
                 </div>
             </div>
-            <br ng-if="$ctrl.error && $ctrl.error.length > 0" />
-            <label class="label label-danger">{{$ctrl.error}}</label>           
+            <br ng-if="$ctrl.loginError && $ctrl.loginError.length > 0" />
+            <label class="label label-danger">{{$ctrl.loginError}}</label>           
         </form>
     </div>
 </div>
-<div ng-if="$ctrl.loggedIn" class="row" style="display: flex;" ng-init="showSidebar = true">
-    <div id="room" ng-class="{'col-xs-12': !showSidebar, 'col-md-9 col-lg-9': showSidebar}">          
+<div ng-if="$ctrl.loggedIn" style="display: flex;" ng-init="showSidebar = true">
+    <div id="room" class="padding" ng-style="{flex: showSidebar ? 9 : 1}">          
         <a ng-click="showSidebar = !showSidebar" class="sidebar-toggle hidden-xs hidden-sm">Toggle sidebar</a>
         <a ng-click="$ctrl.openSidebar()" class="sidebar-toggle hidden-md hidden-lg">Toggle sidebar</a>
-        <div ui-view></div>
+        <div ui-view style="display: flex; flex-direction: column; width: 100%;"></div>
     </div>
-    <sidebar class="hidden-xs hidden-sm col-md-3 col-lg-3" style="display: flex;" ng-class="{'hidden': !showSidebar}"></sidebar> 
+    <sidebar class="hidden-xs hidden-sm padding" ng-style="{flex: showSidebar ? 3 : 0, display: !showSidebar ? 'none' : 'flex'}"></sidebar> 
 </div>

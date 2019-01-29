@@ -1,0 +1,10 @@
+<div class="modal-body text-center">
+    <p class="text-center">
+        <span ng-style="{color: $ctrl.users[$ctrl.selected.userId].userName.split('/')[1]}">{{$ctrl.users[$ctrl.selected.userId].userName.split('/')[0]}}</span>
+        -
+        {{$ctrl.selected.dateTime | date:'dd/MM/yyyy HH:mm:ss'}}
+    </p>
+    <div style="overflow:scroll">
+        <img ng-src="{{$ctrl.selected.message}}" />
+    </div>
+</div>

@@ -35,6 +35,8 @@
     "@types/jquery": "^3.3.22",
     "@types/webpack-env": "^1.13.6",
     "@uirouter/angularjs": "1.0.15",
+    "@types/angular-ui-router": "^1.1.40",
+    "@types/angular-ui-bootstrap": "^0.13.47",
     "babel-core": "^6.26.3",
     "babel-preset-es2015": "^6.24.1",
     "babel-loader": "^8.0.4",

@@ -1,9 +1,9 @@
 body {
-    margin: 12px 0px;
+    margin: 12px 0px 32px 0px;
 }
 @media (min-width: 992px) {
     body {
-        margin: 3rem 0;
+        margin: 3rem 0 2.5rem 0;
     }
     .sidebar.modal-body {
         padding: 0px !important;
@@ -13,6 +13,9 @@ body {
 @media (max-width: 991px) {
     form.no-margin {
         margin-bottom: 0px;
+    }
+    #room {
+        width: 100%;
     }
 }
 
@@ -49,6 +52,10 @@ button, .input-group-addon.btn {
 
 .table {
     font-size: 14px;
+}
+
+.padding {
+    padding: 10px;
 }
 
 h4 {
@@ -109,14 +116,8 @@ h5 {
 }
 
 .messages {
-    height: calc(100% - 90px);
     overflow-y: scroll;
     padding-right:12px;
-}
-@media (min-width: 992px) {
-    .messages {
-        height: calc(100% - 120px);
-    }
 }
 
 .modal-body {

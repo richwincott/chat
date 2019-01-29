@@ -4,20 +4,25 @@ export default class EditProfile {
         success: true,
         message: ""
     };
-    public uploadedAvatarObject = {};
+    public uploadedAvatarObject = {
+        base64: ""
+    };
     public adminKey;
 
-    static $inject = ['$scope', '$uibModalInstance', 'socketService', 'userService', '$timeout', 'me', 'showAdminLogin'];
+    static $inject = ['$scope', '$uibModalInstance', 'socketService', 'userService', '$timeout', 'showAdminLogin'];
 
     constructor(
-        private $scope, 
+        private $scope: ng.IScope, 
         private $uibModalInstance, 
         private socketService, 
         private userService, 
-        private $timeout, 
-        public me, 
-        public showAdminLogin
+        private $timeout: ng.ITimeoutService, 
+        public showAdminLogin: boolean
     ) {}
+
+    get me() {
+        return this.userService.user;
+    }
 
     $onInit() {
         this.$scope.$watch(() => this.uploadedAvatarObject, (newValue, oldValue) => {
