@@ -226,6 +226,12 @@ io.on('connection', function(socket){
         });
     });
 
+    socket.on("fetch-user", function (data, callback) {
+        fetchUsers().then((users) => {
+            callback(users[data]);
+        });
+    });
+
     socket.on("fetch-messages", function (data, callback) {
         fetchMessages().then((messages) => {
             callback(messages.filter((message) => {

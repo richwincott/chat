@@ -1,11 +1,12 @@
 export default class HomeCtrl {
     public loggedIn = false;
-    public isLoading = false;
+    public isLoading = true;
 
     public userName;
     public id;
     public password = "";
     public isExistingUser: boolean = false;
+    public user;
 
     public defaultAvatar = this.userService.defaultAvatar;
     public signUpError;
@@ -45,6 +46,12 @@ export default class HomeCtrl {
         if (localStorage.getItem('id') !== null) {
             this.id = localStorage.getItem('id');
             this.isExistingUser = true;
+            this.socketService.request('fetch-user', this.id).then((user) => {
+                this.user = user;
+                this.isLoading = false;
+            })
+        } else {
+            this.isLoading = false;
         }
     }
 

@@ -12,7 +12,8 @@
             <label class="label label-danger">{{$ctrl.signUpError}}</label>           
         </form>
         <form ng-if="$ctrl.isExistingUser" ng-submit="$ctrl.login()">
-            <p>Welcome back {{$ctrl.id}}, enter your password below...</p>
+            <img class="avatar" ng-src="{{$ctrl.user.avatar ? $ctrl.user.avatar : $ctrl.defaultAvatar}}" style="height:60px; width:60px;" /><br/><br/>
+            <p>Welcome back <span ng-style="{color: $ctrl.user.userName.split('/')[1]}">{{$ctrl.user.userName.split('/')[0]}}</span>, enter your password below...</p>
             <div class="input-group">
                 <input class="form-control" type="password" ng-model="$ctrl.password" />
                 <div class="input-group-addon">
