@@ -18,19 +18,21 @@ export default class EditProfile {
         private userService, 
         private $timeout: ng.ITimeoutService, 
         public showAdminLogin: boolean
-    ) {}
+    ) {
+        this.$scope.$watch(() => this.uploadedAvatarObject.base64, (newValue, oldValue) => {
+            if (newValue != oldValue) {
+                this.me.avatar = 'data:image/png;base64,' + newValue;
+                this.socketService.socket().emit('set-avatar', this.me.avatar);
+            }
+        })
+    }
 
     get me() {
         return this.userService.user;
     }
 
     $onInit() {
-        this.$scope.$watch(() => this.uploadedAvatarObject, (newValue, oldValue) => {
-            if (newValue != oldValue) {
-                this.me.avatar = 'data:image/png;base64,' + newValue.base64;
-                this.socketService.socket().emit('set-avatar', this.me.avatar);
-            }
-        })
+        
     }
 
     public setName() {

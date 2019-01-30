@@ -29,24 +29,29 @@ input {
     -webkit-box-shadow: none !important;
 }
 
+.input-group-addon {
+    padding: 0px;
+}
+
 input:focus, input:active {
     background-color: #f4f4f4 !important;
 }
 
-button, .input-group-addon.btn {
+button, .input-group-addon, .input-group-addon .btn {
     border-radius: 0px !important;
     outline: none !important;
 }
 
-.input-group-addon.btn {
+.input-group-addon .btn {
     background-color: #f9f9f9 !important;
+    line-height: 18px;
 }
 
-.input-group-addon.btn:hover {
+.input-group-addon .btn:hover {
     background-color: #eee !important;
 } 
 
-.input-group-addon:last-child {
+.input-group .btn:last-child {
     border-left: 1px red solid !important;
 }
 

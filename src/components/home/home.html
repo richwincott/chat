@@ -3,23 +3,23 @@
         <form ng-if="!$ctrl.isExistingUser" ng-submit="$ctrl.signUp()">
             <p>Please enter a username...</p>
             <div class="input-group">
-                <input class="form-control" ng-model="$ctrl.userName" />         
-                <div class="input-group-addon btn" ng-click="$ctrl.signUp()">
-                    Sign up
+                <input class="form-control" ng-model="$ctrl.userName" />
+                <div class="input-group-addon">     
+                    <button class="btn" ng-click="$ctrl.signUp()">Sign up</button>
                 </div>
             </div>
             <br ng-if="$ctrl.signUpError && $ctrl.signUpError.length > 0" />
             <label class="label label-danger">{{$ctrl.signUpError}}</label>           
         </form>
         <form ng-if="$ctrl.isExistingUser" ng-submit="$ctrl.login()">
-            <p>Enter you password below...</p>
+            <p>Welcome back {{$ctrl.id}}, enter your password below...</p>
             <div class="input-group">
                 <input class="form-control" type="password" ng-model="$ctrl.password" />
-                <div class="input-group-addon btn" ng-click="$ctrl.login()">
-                    Login
+                <div class="input-group-addon">
+                    <button class="btn" ng-click="$ctrl.login()">Login</button>
                 </div>
             </div>
-            <button class="btn btn-default" ng-click="$ctrl.forgetMe()">Forget me</button>
+            <div class="btn btn-default" ng-click="$ctrl.forgetMe()">Forget me</div>
             <br/>
             <br ng-if="$ctrl.loginError && $ctrl.loginError.length > 0" />
             <label class="label label-danger">{{$ctrl.loginError}}</label>            

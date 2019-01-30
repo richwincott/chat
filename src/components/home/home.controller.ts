@@ -3,6 +3,7 @@ export default class HomeCtrl {
     public isLoading = false;
 
     public userName;
+    public id;
     public password = "";
     public isExistingUser: boolean = false;
 
@@ -42,6 +43,7 @@ export default class HomeCtrl {
         }
 
         if (localStorage.getItem('id') !== null) {
+            this.id = localStorage.getItem('id');
             this.isExistingUser = true;
         }
     }

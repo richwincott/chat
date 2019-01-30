@@ -1,23 +1,28 @@
 <div class="modal-body">
     <h4>Edit Profile</h4>
     <br/>
-    <form>
+    <form style="margin-top:5px;">
         <img class="avatar" ng-src="{{$ctrl.me.avatar ? $ctrl.me.avatar : $ctrl.defaultAvatar}}" style="height:80px; width:80px;" /><br/><br/>
         <input type='file' class="form-control" ng-model='$ctrl.uploadedAvatarObject' base-sixty-four-input>
+        <pre>{{$ctrl.uploadedAvatarObject | json}}</pre>
     </form>
     <form ng-submit="$ctrl.setName()">
         <div class="input-group">
             <input class="form-control" ng-model="$ctrl.me.userName" />
-            <div class="input-group-addon btn" data-dismiss="modal" ng-click="$ctrl.setName()">
-                Save name
+            <div class="input-group-addon">
+                <button class="btn" ng-click="$ctrl.setName()">
+                    Save name
+                </button>
             </div>
         </div>
     </form>
     <form ng-submit="$ctrl.setPassword()">
         <div class="input-group">
             <input class="form-control" ng-model="$ctrl.me.password" />
-            <div class="input-group-addon btn" data-dismiss="modal" ng-click="$ctrl.setPassword()">
-                Update password
+            <div class="input-group-addon">
+                <button class="btn" ng-click="$ctrl.setPassword()">
+                    Update password
+                </button>
             </div>
         </div>
     </form>
@@ -26,8 +31,8 @@
         <br/>
         <div class="input-group">
             <input class="form-control" type="password" ng-model="$ctrl.adminKey" placeholder="Enter the admin key" />
-            <div class="input-group-addon btn" ng-click="$ctrl.checkKey()">
-                Go
+            <div class="input-group-addon">
+                <button class="btn" ng-click="$ctrl.checkKey()">Go</button>
             </div>
         </div>
         <div class="text-center"><br/><label ng-show="$ctrl.adminError.message.length > 0" class="label" ng-class="{'label-success': $ctrl.adminError.success, 'label-danger': !$ctrl.adminError.success}">{{$ctrl.adminError.message}}</label></div>

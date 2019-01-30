@@ -79,9 +79,10 @@ export default class ChatService {
         })
     }
 
-    public fetchMessages() {
+    public fetchMessages(roomName) {
         this.messages = [];
-        this.socketService.request('fetch-messages').then((data) => {
+        this.dates = [];
+        this.socketService.request('fetch-messages', roomName).then((data) => {
             this.messages = data;
             this.formatMessages(true);
         });

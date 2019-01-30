@@ -228,11 +228,9 @@ io.on('connection', function(socket){
 
     socket.on("fetch-messages", function (data, callback) {
         fetchMessages().then((messages) => {
-            fetchUsers().then((users) => {
-                callback(messages.filter((message) => {
-                    return message.room == users[socket.userId].currentRoom;
-                }));
-            })
+            callback(messages.filter((message) => {
+                return message.room == data;
+            }));
         });
     });
 

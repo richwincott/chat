@@ -19,7 +19,7 @@ export default class RoomCtrl {
     public message;
     public uploadedPictureObject = {
         base64: ""
-    }
+    };
 
     public gif;
     public giphy_query = "";
@@ -38,7 +38,12 @@ export default class RoomCtrl {
         private config: IConfig,
         private $uibModal: ng.ui.bootstrap.IModalService
     ) {
-    
+        this.$scope.$watch(() => this.uploadedPictureObject.base64, (newValue, oldValue) => {
+            if (newValue != oldValue) {
+                this.message = 'data:image/png;base64,' + newValue;
+                this.send();
+            }
+        })
     }
 
     get me() {
@@ -58,17 +63,10 @@ export default class RoomCtrl {
     }
 
     $onInit() {
-        this.defaultAvatar = this.userService.defaultAvatar;
-
-        this.$scope.$watch(() => this.uploadedPictureObject, (newValue, oldValue) => {
-            if (newValue != oldValue) {
-                this.message = 'data:image/png;base64,' + newValue.base64;
-                this.send();
-            }
-        })        
+        this.defaultAvatar = this.userService.defaultAvatar;        
 
         this.socketService.socket().emit('join', this.$stateParams.roomName);
-        this.chatService.fetchMessages();
+        this.chatService.fetchMessages(this.$stateParams.roomName);
     }
 
     public fetchGif() {
@@ -132,8 +130,19 @@ export default class RoomCtrl {
     }
 
     public openUploadDialog() {
-        document.getElementsByClassName(".pictureUpload").item[0].click();
+        this.simulateClick(document.getElementsByClassName("pictureUpload").item(0));
     }
+
+    private simulateClick(elem) {
+        // Create our event (with options)
+        var evt = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        // If cancelled, don't dispatch our event
+        var canceled = !elem.dispatchEvent(evt);
+    };
 
     public openImage(message) {
         this.$uibModal.open({
@@ -159,8 +168,8 @@ export default class RoomCtrl {
 
     scrollToBottom = () => {
         this.$timeout(() => {
-            if (document.getElementsByClassName(".messages").item[0]) {
-                document.getElementsByClassName(".messages").item[0].scrollTo(0, document.getElementsByClassName(".messages").item[0].scrollHeight);
+            if (document.getElementsByClassName("messages").item(0)) {
+                document.getElementsByClassName("messages").item(0).scrollTo(0, document.getElementsByClassName("messages").item(0).scrollHeight);
             }
         }, 100);
     }

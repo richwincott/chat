@@ -4,8 +4,8 @@
     <form ng-submit="$ctrl.createRoom()">
         <div class="input-group">
             <input class="form-control" ng-model="$ctrl.newRoomName" />
-            <div class="input-group-addon btn" data-dismiss="modal" ng-click="$ctrl.createRoom()">
-                Create
+            <div class="input-group-addon">
+                <button class="btn" ng-click="$ctrl.createRoom()">Create</button>
             </div>
         </div>
     </form>
