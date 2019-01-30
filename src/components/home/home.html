@@ -1,15 +1,28 @@
 <div ng-if="!$ctrl.loggedIn && !$ctrl.isLoading" class="row">
     <div class="col-xs-6 col-xs-offset-3">
-        <form ng-submit="$ctrl.login()">
+        <form ng-if="!$ctrl.isExistingUser" ng-submit="$ctrl.signUp()">
             <p>Please enter a username...</p>
             <div class="input-group">
                 <input class="form-control" ng-model="$ctrl.userName" />         
+                <div class="input-group-addon btn" ng-click="$ctrl.signUp()">
+                    Sign up
+                </div>
+            </div>
+            <br ng-if="$ctrl.signUpError && $ctrl.signUpError.length > 0" />
+            <label class="label label-danger">{{$ctrl.signUpError}}</label>           
+        </form>
+        <form ng-if="$ctrl.isExistingUser" ng-submit="$ctrl.login()">
+            <p>Enter you password below...</p>
+            <div class="input-group">
+                <input class="form-control" type="password" ng-model="$ctrl.password" />
                 <div class="input-group-addon btn" ng-click="$ctrl.login()">
                     Login
                 </div>
             </div>
+            <button class="btn btn-default" ng-click="$ctrl.forgetMe()">Forget me</button>
+            <br/>
             <br ng-if="$ctrl.loginError && $ctrl.loginError.length > 0" />
-            <label class="label label-danger">{{$ctrl.loginError}}</label>           
+            <label class="label label-danger">{{$ctrl.loginError}}</label>            
         </form>
     </div>
 </div>

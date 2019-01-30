@@ -39,6 +39,12 @@ export default class EditProfile {
         }
     }
 
+    public setPassword() {
+        if (this.me.password.length > 0) {
+            this.socketService.socket().emit('set-password', this.me.password)
+        }
+    }
+
     public checkKey() {
         if (this.adminKey && this.adminKey.length > 0) {
             this.adminError.message = "";

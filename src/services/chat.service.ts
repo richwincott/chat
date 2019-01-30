@@ -34,6 +34,7 @@ export default class ChatService {
 
         this.socketService.socket().on('new-room', (data) => {
             this.rooms.push(data);
+            this.$rootScope.$broadcast('new-room');
             this.$rootScope.$apply();
         });
 

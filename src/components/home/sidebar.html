@@ -8,7 +8,8 @@
         <div ng-switch="$ctrl.tabState">
             <div ng-switch-when="rooms">
                 <div>
-                    <div class="close" ng-click="$ctrl.openAddRoom()" style="float:initial;"><i class="fa fa-plus"></i></div>
+                    <div class="close" ng-click="$ctrl.showAddRoom = !$ctrl.showAddRoom" style="float:initial;"><i class="fa fa-plus"></i></div>
+                    <add-room ng-if="$ctrl.showAddRoom"></add-room>
                     <br/>
                 </div>     
                 <ul class="list-unstyled room-list">

@@ -6,7 +6,6 @@ var path = require('path');
 var mongoose = require('mongoose');
 
 var seed = 1000;
-var rooms = ["General"];
 
 //Import the mongoose module
 var mongoose = require('mongoose');
@@ -42,6 +41,7 @@ var messageSchema = new Schema({
 
 var userSchema = new Schema({
     id: Number,
+    password: { type: String, default: "" },
     userName: String,
     online: { type: Boolean, default: false },
     avatar: String,
@@ -122,22 +122,6 @@ function fetchRooms() {
     })
 }
 
-roomModel.find({}, function(err, _rooms) {
-    if (err) handleError(err);
-
-    if (_rooms.length == 0) {
-        var newSeedInstance = new roomModel({name: rooms[0]});
-        save(newSeedInstance);
-    }
-    else {
-        _rooms.forEach(room => {
-            if (room.name != "General") {
-                rooms.push(room.name);
-            }
-        });
-    }
-});
-
 function save(instance) {
     instance.save(function (err) {
         if (err) return handleError(err);
@@ -155,22 +139,22 @@ io.on('connection', function(socket){
     socket.on('login', (data, callback) => {
         fetchUsers().then((users) => {
             if (users[data.id]) {
-                users[data.id].online = true;
-                authenticated();
-                socket.userId = data.id;
-                io.emit("users", users);
-                console.log(data.id + ' connected');
-                userModel.find({id: socket.userId}, function (err, users) {
-                    if (err) return handleError(err);
-                    users[0].online = true;
-                    save(users[0]);
-                });
-                callback(users[data.id]);
-            }
-            else {
-                newUser(data).then((user) => {
-                    callback(user);
-                })
+                if (Buffer.from(users[data.id].password, 'base64').toString() === data.password) {
+                    users[data.id].online = true;
+                    authenticated();
+                    socket.userId = data.id;
+                    io.emit("users", users);
+                    console.log(data.id + ' connected');
+                    userModel.find({id: socket.userId}, function (err, users) {
+                        if (err) return handleError(err);
+                        users[0].online = true;
+                        save(users[0]);
+                    });
+                    callback(users[data.id]);
+                }
+                else {
+                    callback();
+                }
             }
         })
     });
@@ -205,7 +189,6 @@ io.on('connection', function(socket){
     function newUser(data) {
         return new Promise((resolve, reject) => {
             fetchUsers().then((users) => {
-                seed++
                 var user = {
                     id: seed,
                     userName: data.username ? data.username : "Anon",
@@ -222,6 +205,7 @@ io.on('connection', function(socket){
                 save(newUserInstance);
                 seedModel.find({}, function (err, seeds) {
                     if (err) return handleError(err);
+                    seed++
                     seeds[0].userId = seed;
                     save(seeds[0]);
                 });
@@ -266,7 +250,15 @@ io.on('connection', function(socket){
                     save(users[0]);
                 });
             })
-        });        
+        });     
+        
+        socket.on("set-password", function (data) {
+            userModel.find({id: socket.userId}, function (err, users) {
+                if (err) return handleError(err);
+                users[0].password = Buffer.from(data).toString('base64');
+                save(users[0]);
+            });
+        });  
 
         socket.on("set-avatar", function (data) {
             fetchUsers().then((users) => {

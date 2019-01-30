@@ -1,9 +1,13 @@
 export default class HomeCtrl {
     public loggedIn = false;
     public isLoading = false;
+
     public userName;
+    public password = "";
+    public isExistingUser: boolean = false;
 
     public defaultAvatar = this.userService.defaultAvatar;
+    public signUpError;
     public loginError;
     
     static $inject = ["$scope", "$state", "userService", "chatService", "socketService", "$uibModal"];
@@ -38,14 +42,7 @@ export default class HomeCtrl {
         }
 
         if (localStorage.getItem('id') !== null) {
-            this.isLoading = true;
-            this.socketService.request('login', { id: parseInt(localStorage.getItem('id')) }).then((data) => {
-                this.loggedIn = true;
-                this.isLoading = false;
-                
-                localStorage.setItem('id', data.id);
-                this.userService.setUser(data);
-            });
+            this.isExistingUser = true;
         }
     }
 
@@ -61,10 +58,37 @@ export default class HomeCtrl {
         });
     }
 
+    public forgetMe() {
+        localStorage.removeItem('id');
+        this.isExistingUser = false;
+    }
+
     public login() {
+        this.isLoading = true;
+        this.loginError = "";
+        this.socketService.request('login', { 
+            id: parseInt(localStorage.getItem('id')),
+            password: this.password
+        }).then((data) => {
+            if (data) {
+                this.loggedIn = true;
+                this.isLoading = false;
+                
+                localStorage.setItem('id', data.id);
+                data.password = atob(data.password);
+                this.userService.setUser(data);
+            } else {
+                this.isLoading = false;
+                this.loginError = "Incorrect password, please try again.";
+                this.password = "";
+            }
+        });
+    }
+
+    public signUp() {
         if (this.userName && this.userName.length > 0) {
             this.isLoading = true;
-            this.loginError = "";
+            this.signUpError = "";
             this.socketService.socket().emit('new-user', { username: this.userName }, (data) => {
                 if (data) {
                     this.loggedIn = true;
@@ -75,7 +99,7 @@ export default class HomeCtrl {
                 }
                 else {
                     this.isLoading = false;
-                    this.loginError = "That username is already taken, please try another.";
+                    this.signUpError = "That username is already taken, please try another.";
                     this.userName = "";
                 }
                 this.$scope.$apply();

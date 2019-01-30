@@ -9,10 +9,12 @@ class SidebarCtrl {
     public showAdminLogin = true;
     public roomName = this.$stateParams.roomName;
     public defaultAvatar = this.userService.defaultAvatar;
+    public showAddRoom: boolean = false;
 
-    static $inject = ['userService', 'chatService', '$state', '$stateParams', '$uibModal'];
+    static $inject = ['$scope', 'userService', 'chatService', '$state', '$stateParams', '$uibModal'];
 
     constructor(
+        private $scope: ng.IScope,
         private userService,
         private chatService,
         private $state: ng.ui.IStateService,
@@ -36,6 +38,10 @@ class SidebarCtrl {
         if (this.me.admin) {
             this.showAdminLogin = false;
         };
+
+        this.$scope.$on('new-room', () => {
+            this.showAddRoom = false;
+        })
     }
 
     public openEditProfile() {
@@ -70,33 +76,6 @@ class SidebarCtrl {
             controller: function(selected, userService) {
                 this.defaultAvatar = userService.defaultAvatar;
                 this.selected = selected;
-            }
-        }).result.then(() => {
-            // closed the modal
-        }, () => {
-            // cancelled the modal
-        });
-    }
-
-    public openAddRoom() {
-        this.$uibModal.open({
-            animation: true,
-            templateUrl: addRoomHTML,
-            size: 'sm',
-            bindToController: true,
-            controllerAs: '$ctrl',
-            controller: function(socketService, $uibModalInstance) {
-                this.socketService = socketService;
-                this.newRoomName;
-
-                this.createRoom = function () {
-                    if (this.newRoomName.length > 0) {
-                        this.socketService.socket().emit('new-room', this.newRoomName);
-                        this.newRoomName = "";
-                        $uibModalInstance.close();
-                        // $uibModalInstance.dismiss('cancel');
-                    }
-                }
             }
         }).result.then(() => {
             // closed the modal
