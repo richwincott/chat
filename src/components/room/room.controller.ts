@@ -77,7 +77,7 @@ export default class RoomCtrl {
 
     private associatedUser(roomName) {
         if (roomName.indexOf(':') > -1) { // ie private, refactor this later to user private property on room
-            return roomName.split(':')[0] == this.me.id ? true : false;
+            return roomName.split(':').indexOf(this.me.id.toString()) > -1 ? true : false;
         } else {
             return true;
         }
