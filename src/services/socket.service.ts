@@ -9,7 +9,7 @@ export default class SocketService {
         private $q,
         private $rootScope
     ) {
-        this._socket = new io('http://127.0.0.1:3003');
+        this._socket = new io('http://127.0.0.1:3004');
     }
 
     public socket() {

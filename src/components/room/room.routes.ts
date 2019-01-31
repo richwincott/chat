@@ -9,7 +9,10 @@ function RoomConfig($stateProvider, $urlRouterProvider) {
         url: ':roomName',
         controller: 'RoomCtrl',
         controllerAs: '$ctrl',
-        templateUrl: HTML
+        templateUrl: HTML,
+        params: {
+          private: false
+        }
       });
 };
   

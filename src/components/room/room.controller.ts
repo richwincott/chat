@@ -25,11 +25,12 @@ export default class RoomCtrl {
     public giphy_query = "";
     public giphy_offset = 0;
 
-    static $inject = ["$scope", "$http", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "$uibModal"];
+    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "$uibModal"];
 
     constructor(
         private $scope: ng.IScope,
         private $http: ng.IHttpService,
+        private $state: ng.ui.IStateService,
         private $stateParams: ng.ui.IStateParamsService,
         private $timeout: ng.ITimeoutService,
         private userService,
@@ -63,10 +64,23 @@ export default class RoomCtrl {
     }
 
     $onInit() {
-        this.defaultAvatar = this.userService.defaultAvatar;        
+        this.defaultAvatar = this.userService.defaultAvatar;
+        
+        if (!this.associatedUser(this.$stateParams.roomName)) {
+            this.me.currentRoom = "General";
+            this.$state.go('index.home.room', {roomName: "General"});
+        } else {
+            this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
+            this.chatService.fetchMessages(this.$stateParams.roomName);
+        }        
+    }
 
-        this.socketService.socket().emit('join', this.$stateParams.roomName);
-        this.chatService.fetchMessages(this.$stateParams.roomName);
+    private associatedUser(roomName) {
+        if (roomName.indexOf(':') > -1) { // ie private, refactor this later to user private property on room
+            return roomName.split(':')[0] == this.me.id ? true : false;
+        } else {
+            return true;
+        }
     }
 
     public fetchGif() {

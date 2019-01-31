@@ -13,8 +13,15 @@
                     <br/>
                 </div>     
                 <ul class="list-unstyled room-list">
-                    <li ng-repeat="room in $ctrl.rooms track by $index">
-                        <button class="btn btn-red" ng-click="$ctrl.selectRoom(room)" data-dismiss="modal" ng-class="{'selected': room == $ctrl.roomName}">{{room}}</button>
+                    <li ng-if="room.name.split(':')[0] == $ctrl.me.id || (room.private && room.name.split(':')[1] == $ctrl.me.id) || !room.private" ng-repeat="room in $ctrl.rooms track by $index">
+                        <button class="btn btn-red" ng-click="$ctrl.selectRoom(room.name)" data-dismiss="modal" ng-class="{'selected': room.name == $ctrl.roomName}">
+                            <span ng-if="!room.private">
+                                {{room.name}}<br/>
+                            </span>
+                            <span ng-if="room.private">
+                                priv: {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}}
+                            </span>
+                        </button>
                         <br/><br/>
                     </li>
                 </ul>
@@ -25,7 +32,7 @@
                     <br/><br/>
                 </div>
                 <ul class="list-unstyled users-list">
-                    <li ng-if="user.online || $ctrl.showOffline" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:10px; height:40px;" ng-class="{'faint': !user.online}">
+                    <li ng-if="user.online || $ctrl.showOffline" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:10px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
                         <div class="pull-left">
                             <img class="avatar" ng-src="{{user.avatar ? user.avatar : $ctrl.defaultAvatar}}" ng-click="$ctrl.openAvatar(user)" style="height:40px; width:40px; cursor:pointer;" />
                         </div>
@@ -35,7 +42,8 @@
                                 <span ng-if="!user.admin">Basic</span>
                                 <span ng-if="user.admin">Admin</span>
                             </label>&nbsp;
-                            <label class="label label-default">{{user.currentRoom}}</label>
+                            <label ng-if="user.currentRoom.indexOf(':') == -1" class="label label-default">{{user.currentRoom}}</label>
+                            <label ng-if="user.currentRoom.indexOf(':') > -1" class="label label-danger">PRIVATE</label>
                         </small>
                     </li>
                 </ul>
@@ -53,7 +61,8 @@
                 <span ng-if="!$ctrl.me.admin">Basic</span>
                 <span ng-if="$ctrl.me.admin">Admin</span>
             </label>&nbsp;
-            <label class="label label-default">{{$ctrl.me.currentRoom}}</label>
+            <label ng-if="$ctrl.me.currentRoom.indexOf(':') == -1" class="label label-default">{{$ctrl.me.currentRoom}}</label>
+            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">PRIVATE</label>
         </small><br/>
         <a class="editProfileLink" ng-click="$ctrl.openEditProfile()">Edit Profile</a>
     </div>

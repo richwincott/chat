@@ -51,6 +51,7 @@ var userSchema = new Schema({
 
 var roomSchema = new Schema({
     name: String,
+    private: { type: Boolean, default: false }
 });
 
 // Compile model from schema
@@ -103,17 +104,19 @@ function fetchRooms() {
         roomModel.find({}, function(err, _rooms) {
             if (err) handleError(err);
 
-            let rooms = ["General"];
-        
+            let rooms = [];
+
             if (_rooms.length == 0) {
-                var newSeedInstance = new roomModel({name: rooms[0]});
+                rooms.push({
+                    name: "General",
+                    private: false
+                });
+                var newSeedInstance = new roomModel(rooms[0]);
                 save(newSeedInstance);
             }
             else {
                 _rooms.forEach(room => {
-                    if (room.name != "General") {
-                        rooms.push(room.name);
-                    }
+                    rooms.push(room);
                 });
             }
 
@@ -299,12 +302,13 @@ io.on('connection', function(socket){
             })
         });
 
-        socket.on('join', function (roomName) {
+        socket.on('join', function (roomName, private) {
             fetchRooms().then((rooms) => {
                 fetchUsers().then((users) => {
-                    if (rooms.indexOf(roomName) == -1) {
-                        io.emit('new-room', roomName);
-                        var newRoomInstance = new roomModel({name: roomName});
+                    if (!roomExists(rooms, roomName)) {
+                        let newRoom = {name: roomName, private: private}
+                        io.emit('new-room', newRoom);
+                        var newRoomInstance = new roomModel(newRoom);
                         save(newRoomInstance);
                     }
                     users[socket.userId].currentRoom = roomName;
@@ -398,6 +402,16 @@ io.on('connection', function(socket){
     });
 });
 
-http.listen(3003, function(){
-  console.log('listening on *:3003');
+function roomExists(rooms, roomName) {
+    let found;
+    rooms.forEach((room) => {
+        if (room.name == roomName) {
+            found = room;
+        }
+    })
+    return found ? true : false;
+}
+
+http.listen(3004, function(){
+  console.log('listening on *:3004');
 });

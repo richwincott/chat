@@ -7,7 +7,6 @@ class SidebarCtrl {
     public showOffline = false;
     public tabState = "rooms";
     public showAdminLogin = true;
-    public roomName = this.$stateParams.roomName;
     public defaultAvatar = this.userService.defaultAvatar;
     public showAddRoom: boolean = false;
 
@@ -21,6 +20,10 @@ class SidebarCtrl {
         private $stateParams: ng.ui.IStateParamsService,
         private $uibModal: ng.ui.bootstrap.IModalService
     ) {}
+
+    get roomName() {
+        return this.$stateParams.roomName;
+    }
 
     get me() {
         return this.userService.user;
@@ -37,6 +40,7 @@ class SidebarCtrl {
     $onInit() {
         if (this.me.admin) {
             this.showAdminLogin = false;
+            this.showOffline = true;
         };
 
         this.$scope.$on('new-room', () => {
@@ -84,10 +88,26 @@ class SidebarCtrl {
         });
     }
     
-    public selectRoom(roomName) {
-        this.roomName = roomName;
+    public selectRoom(roomName, priv?) {
+        if (priv && roomName.split(':')[1] == this.me.id) {
+            return;
+        }
+
+        let params = {
+            roomName: roomName,
+            private: priv
+        }
         this.me.currentRoom = roomName;
-        this.$state.go('index.home.room', {roomName: roomName});
+        if (priv) {
+            this.tabState = "rooms";
+        }
+        this.$state.go('index.home.room', params);
+    }
+
+    public userById(id) {
+        if (this.users) {
+            return this.users[parseInt(id)];
+        }
     }
 }
 
