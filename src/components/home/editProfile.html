@@ -1,10 +1,10 @@
-<div class="modal-body" style="background-color:#f3f3f3;">
+<div class="modal-body" style="background-color:#f8f8f8;">
     <h4>Edit Profile</h4>
     <br/>
     <form style="margin-top:5px;">
         <img class="avatar" ng-src="{{$ctrl.me.avatar ? $ctrl.me.avatar : $ctrl.defaultAvatar}}" style="height:80px; width:80px;" /><br/><br/>
         <input type='file' class="form-control" ng-model='$ctrl.uploadedAvatarObject' base-sixty-four-input>
-        <pre>{{$ctrl.uploadedAvatarObject | json}}</pre>
+        <!-- <pre>{{$ctrl.uploadedAvatarObject | json}}</pre> -->
     </form>
     <form ng-submit="$ctrl.setName()">
         <div class="input-group">
