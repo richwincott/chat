@@ -5,15 +5,15 @@
             <button class="btn btn-default" style="flex: 1" ng-click="$ctrl.tabState = 'users'" ng-class="{'selected': $ctrl.tabState == 'users'}">Users</button>
         </div>
         <br/>
-        <div ng-switch="$ctrl.tabState">
+        <div class="tab-content" ng-switch="$ctrl.tabState">
             <div ng-switch-when="rooms">
                 <div>
-                    <div class="close" ng-click="$ctrl.showAddRoom = !$ctrl.showAddRoom" style="float:initial;"><i class="fa fa-plus"></i></div>
+                    <div class="close" ng-click="$ctrl.showAddRoom = !$ctrl.showAddRoom" style="float:initial; margin-left: 10px;"><i class="fa fa-plus"></i></div>
                     <add-room ng-if="$ctrl.showAddRoom"></add-room>
                     <br/>
                 </div>     
                 <ul class="list-unstyled room-list">
-                    <li ng-if="room.name.split(':')[0] == $ctrl.me.id || (room.private && room.name.split(':')[1] == $ctrl.me.id) || !room.private" ng-repeat="room in $ctrl.rooms track by $index">
+                    <li ng-if="room.name.split(':')[0] == $ctrl.me.id || (room.private && room.name.split(':')[1] == $ctrl.me.id) || !room.private" style="margin-bottom: 10px;" ng-repeat="room in $ctrl.rooms track by $index">
                         <button class="btn btn-red" ng-click="$ctrl.selectRoom(room.name)" data-dismiss="modal" ng-class="{'selected': room.name == $ctrl.roomName}">
                             <span ng-if="!room.private">
                                 {{room.name}}<br/>
@@ -23,7 +23,6 @@
                             </span>
                             <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"><br/>New message!</span>
                         </button>
-                        <br/><br/>
                     </li>
                 </ul>
             </div>
@@ -33,7 +32,7 @@
                     <br/><br/>
                 </div>
                 <ul class="list-unstyled users-list">
-                    <li ng-if="user.online || $ctrl.showOffline" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:10px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
+                    <li ng-if="user.online || $ctrl.showOffline" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:15px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
                         <div class="pull-left">
                             <img class="avatar" ng-src="{{user.avatar ? user.avatar : $ctrl.defaultAvatar}}" ng-click="$ctrl.openAvatar(user)" style="height:40px; width:40px; cursor:pointer;" />
                         </div>

@@ -7,6 +7,10 @@ body {
     }
     .sidebar.modal-body {
         padding: 0px !important;
+        border-radius: 6px;
+    }
+    .tab-content, .bottom {
+        padding: 0px 15px;
     }
 }
 
@@ -31,6 +35,7 @@ input {
 
 .btn {
     border-radius: 0px;
+    background-color: transparent;
 }
 
 .input-group-addon {
@@ -135,6 +140,11 @@ h5 {
 
 .faint {
     opacity: 0.3;
+}
+
+.sidebar {
+    background-color: #f3f3f3;
+    overflow: hidden;
 }
 
 .sidebar-toggle {
