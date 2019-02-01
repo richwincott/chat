@@ -21,7 +21,7 @@
                     <button class="btn" ng-click="$ctrl.login()">Login</button>
                 </div>
             </div>
-            <div class="btn btn-default" ng-click="$ctrl.forgetMe()">Forget me</div>
+            <div class="btn btn-default" style="margin-top: 8px;" ng-click="$ctrl.forgetMe()">Forget me</div>
             <br/>
             <br ng-if="$ctrl.loginError && $ctrl.loginError.length > 0" />
             <label class="label label-danger">{{$ctrl.loginError}}</label>            
