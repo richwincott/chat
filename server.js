@@ -51,7 +51,8 @@ var userSchema = new Schema({
 
 var roomSchema = new Schema({
     name: String,
-    private: { type: Boolean, default: false }
+    private: { type: Boolean, default: false },
+    lastUpdate: Date
 });
 
 // Compile model from schema
@@ -331,11 +332,12 @@ io.on('connection', function(socket){
 
         socket.on("new-message", function (message) {
             fetchUsers().then((users) => {
+                const dateTime = new Date();
                 const newMessage = {
                     userId: socket.userId,
                     message: message,
                     type: "text",
-                    dateTime: new Date(),
+                    dateTime: dateTime,
                     room: users[socket.userId].currentRoom,
                     edited: false,
                     deleted: false
@@ -346,6 +348,12 @@ io.on('connection', function(socket){
                 io.to(newMessage.room).emit('new-message', newMessage);
                 var newMessageInstance = new messageModel(newMessage);
                 save(newMessageInstance);
+                io.emit('room-last-update', {name: users[socket.userId].currentRoom, newDateTime: dateTime});
+                roomModel.find({name: users[socket.userId].currentRoom}, function (err, rooms) {
+                    if (err) return handleError(err);
+                    rooms[0].lastUpdate = dateTime;
+                    save(rooms[0]);
+                });
             })
         })
 

@@ -19,8 +19,9 @@
                                 {{room.name}}<br/>
                             </span>
                             <span ng-if="room.private">
-                                priv: {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}}
+                                <i class="fa fa-user"></i> {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}}
                             </span>
+                            <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"><br/>New message!</span>
                         </button>
                         <br/><br/>
                     </li>
@@ -62,7 +63,7 @@
                 <span ng-if="$ctrl.me.admin">Admin</span>
             </label>&nbsp;
             <label ng-if="$ctrl.me.currentRoom.indexOf(':') == -1" class="label label-default">{{$ctrl.me.currentRoom}}</label>
-            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">PRIVATE</label>
+            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">{{$ctrl.userById($ctrl.me.currentRoom.split(':')[1]).userName.split('/')[0]}}</label>
         </small><br/>
         <a class="editProfileLink" ng-click="$ctrl.openEditProfile()">Edit Profile</a>
     </div>

@@ -46,6 +46,11 @@ class SidebarCtrl {
         this.$scope.$on('new-room', () => {
             this.showAddRoom = false;
         })
+
+        let dateTimeNow = new Date();
+        this.rooms.forEach((room) => {
+            room.lastAccessed = dateTimeNow;
+        });
     }
 
     public openEditProfile() {
@@ -93,6 +98,8 @@ class SidebarCtrl {
             return;
         }
 
+        this.roomByName(this.me.currentRoom).lastAccessed = new Date();
+
         let params = {
             roomName: roomName,
             private: priv
@@ -108,6 +115,20 @@ class SidebarCtrl {
         if (this.users) {
             return this.users[parseInt(id)];
         }
+    }
+
+    public dateCheck(room) {
+        return new Date(room.lastUpdate) > room.lastAccessed;
+    }
+
+    private roomByName(roomName) {
+        let match;
+        this.rooms.forEach((room) => {
+            if (room.name == roomName) {
+                match = room;
+            }
+        });
+        return match;
     }
 }
 

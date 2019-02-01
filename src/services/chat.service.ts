@@ -37,6 +37,15 @@ export default class ChatService {
             this.$rootScope.$broadcast('new-room');
             this.$rootScope.$apply();
         });
+        
+        this.socketService.socket().on('room-last-update', (data) => {
+            this.rooms.forEach((room) => {
+                if (room.name == data.name) {
+                    room.lastUpdate = data.newDateTime;
+                }
+            });
+            this.$rootScope.$apply();
+        });
 
         this.socketService.socket().on('new-message', (data) => {
             this.messages.push(data);
