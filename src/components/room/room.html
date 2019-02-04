@@ -9,7 +9,7 @@
                 <tr ng-if="!message.deleted || ($ctrl.me.admin && $ctrl.showDeleted)" ng-repeat="message in $ctrl.messages | filter:date track by $index">
                     <td>
                         <div class="col-xs-8 bubble" ng-class="{'col-xs-offset-4' : $ctrl.me.id == message.userId, 'faint' : message.deleted}">
-                            <div class="pull-left"><img class="avatar" ng-src="{{$ctrl.users[message.userId].avatar ? $ctrl.users[message.userId].avatar : $ctrl.defaultAvatar}}" /></div>
+                            <div class="pull-left" uib-tooltip-template="$ctrl.userTooltip" tooltip-placement="bottom-left"><img class="avatar" ng-src="{{$ctrl.users[message.userId].avatar ? $ctrl.users[message.userId].avatar : $ctrl.defaultAvatar}}" /></div>
                             <div class="pull-right text-right">{{message.dateTime | date:'dd/MM/yyyy HH:mm:ss'}}<br/>
                                 <a ng-if="$ctrl.me.id == message.userId" ng-click="$ctrl.editMessage(message)">Edit</a>
                                 <a ng-if="$ctrl.me.admin" ng-click="$ctrl.removeMessage(message)">Delete</a>

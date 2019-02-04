@@ -1,4 +1,5 @@
 let viewImageHTML = require('./viewImage.html');
+let userTooltip = require('./userTooltip.html');
 
 interface IGiphyResponse {
     data: {
@@ -15,6 +16,7 @@ export default class RoomCtrl {
     public editingMessage = -1;
     public showDeleted = false;
     public defaultAvatar;
+    public userTooltip;
 
     public message;
     public uploadedPictureObject = {
@@ -65,6 +67,7 @@ export default class RoomCtrl {
 
     $onInit() {
         this.defaultAvatar = this.userService.defaultAvatar;
+        this.userTooltip = userTooltip;
         
         if (!this.associatedUser(this.$stateParams.roomName)) {
             this.me.currentRoom = "General";

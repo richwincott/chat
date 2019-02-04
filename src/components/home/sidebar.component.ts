@@ -1,6 +1,5 @@
 let sidebarHtml = require('./sidebar.html');
 let editProfileHTML = require('./editProfile.html');
-let addRoomHTML = require('./addRoom.html');
 let avatarHTML = require('./avatar.html');
 
 class SidebarCtrl {
