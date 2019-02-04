@@ -26,6 +26,7 @@ export default class RoomCtrl {
     public gif;
     public giphy_query = "";
     public giphy_offset = 0;
+    public giphy_show = false;
 
     static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "$uibModal"];
 
@@ -87,7 +88,6 @@ export default class RoomCtrl {
     }
 
     public fetchGif() {
-        this.gif = undefined;
         this.giphy_offset++;
         this.$http.get('http://api.giphy.com/v1/gifs/search?q=' + this.giphy_query + '&api_key=' + this.config.giphyApiKey + '&limit=1&offset=' + (this.giphy_offset - 1))
             .then((response: ng.IHttpResponse<IGiphyResponse>) => {
@@ -100,11 +100,13 @@ export default class RoomCtrl {
         this.send();
         this.gif = undefined;
         this.giphy_query = "";
+        this.giphy_show = false;
     }
 
     public cancelGif() {
         this.gif = undefined;
         this.giphy_query = "";
+        this.giphy_show = false;
         this.message = "";
     }
 
@@ -113,6 +115,7 @@ export default class RoomCtrl {
         if (this.message.indexOf('/giphy ') > -1) {
             this.giphy_query = this.message.split('/giphy ')[1];
             this.giphy_offset = 0;
+            this.giphy_show = true;
             this.fetchGif();
             return;
         }

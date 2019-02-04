@@ -188,12 +188,18 @@ a {
 
 .giphy-container {
     display: inline-block;
-    background-color: #ddd;
+    background-color: #f3f3f3;
     padding: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    border: 1px solid #ddd;
+    border-bottom: none;
 
     .gif {
         margin: 4px 0px;
+        width: 200px;
+        height: 133px;
+        background-position: center;
+        background-size: cover;
     }
 }

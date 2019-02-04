@@ -29,15 +29,13 @@
     </ul>
 
     <form ng-submit="$ctrl.send()" class="no-margin bottom">
-        <div class="giphy-container" ng-if="$ctrl.gif">
+        <div class="giphy-container" ng-if="$ctrl.giphy_show">
             <div class="text-center">
-                {{$ctrl.gif.title}}
-                <br/>
-                <img class="gif" ng-src="{{$ctrl.gif.images.fixed_width.url}}" />
-                <br/>
-                <button class="btn btn-primary" ng-click="$ctrl.sendGif()">Send</button>
-                <button class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
-                <button class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
+                <div style="width: 200px; text-overflow: ellipsis;">{{$ctrl.gif.title}}</div>
+                <div class="gif" ng-style="{backgroundImage: 'url(' + $ctrl.gif.images.fixed_width.url + ')'}"></div>
+                <button type="button" class="btn btn-red selected" ng-click="$ctrl.sendGif()">Send</button>
+                <button type="button" class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
+                <button type="button" class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
             </div>
         </div>
         <div class="input-group">

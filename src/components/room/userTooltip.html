@@ -1,4 +1,4 @@
-<div class="text-center" style="padding: 10px 0px;">
+<div class="text-center" style="padding: 10px 0px 5px 0px;">
     <img class="avatar" ng-src="{{$ctrl.users[message.userId].avatar ? $ctrl.users[message.userId].avatar : $ctrl.defaultAvatar}}" style="height:80px; width:80px; display: block; margin: 0px auto; cursor:pointer;" />
     <h5 ng-style="{color: $ctrl.users[message.userId].userName.split('/')[1]}" style="margin: 8px 0px;">{{$ctrl.users[message.userId].userName.split('/')[0]}}</h5><br/>
     <label class="label" ng-class="{'label-success': $ctrl.users[message.userId].admin, 'label-warning': !$ctrl.users[message.userId].admin}">
