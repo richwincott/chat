@@ -175,10 +175,10 @@ export default class RoomCtrl {
                 selected: message,
                 users: this.users
             },
-            controller: function(selected, users) {
+            controller: ['selected', 'users', function(selected, users) {
                 this.users = users;
                 this.selected = selected;
-            }
+            }]
         }).result.then(() => {
             // closed the modal
         }, () => {

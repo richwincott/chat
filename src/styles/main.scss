@@ -1,9 +1,9 @@
 body {
-    margin: 12px 0px 32px 0px;
+    margin: 10px 0px 14px 0px;
 }
 @media (min-width: 992px) {
     body {
-        margin: 3rem 0 2.5rem 0;
+        margin: 1.5rem 0 1.7rem 0;
     }
     .sidebar.modal-body {
         padding: 0px !important;
@@ -11,6 +11,9 @@ body {
     }
     .tab-content, .bottom {
         padding: 0px 15px;
+    }
+    form.bottom {
+        padding: 0px;
     }
 }
 
@@ -21,6 +24,10 @@ body {
     #room {
         width: 100%;
     }
+}
+
+form.no-margin {
+    margin-bottom: 2px;
 }
 
 input {
@@ -151,6 +158,8 @@ h5 {
     float: right;
     text-decoration: none;
     color: #888;
+    z-index: 100;
+    position: relative;
 }
 
 .sidebar-toggle:hover {

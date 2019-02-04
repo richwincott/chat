@@ -81,10 +81,10 @@ class SidebarCtrl {
             resolve: {
                 selected: user
             },
-            controller: function(selected, userService) {
+            controller: ['selected', 'userService', function(selected, userService) {
                 this.defaultAvatar = userService.defaultAvatar;
                 this.selected = selected;
-            }
+            }]
         }).result.then(() => {
             // closed the modal
         }, () => {
