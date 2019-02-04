@@ -3,13 +3,14 @@ const io = require('../../node_modules/socket.io-client');
 export default class SocketService { 
     private _socket;
 
-    static $inject = ["$q", "$rootScope"];
+    static $inject = ["$q", "$rootScope", "config"];
 
     constructor(
         private $q,
-        private $rootScope
+        private $rootScope,
+        private config
     ) {
-        this._socket = new io('http://127.0.0.1:3004');
+        this._socket = new io(window.location.hostname + ':' + config.socketPort);
     }
 
     public socket() {

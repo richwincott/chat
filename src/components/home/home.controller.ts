@@ -3,10 +3,11 @@ export default class HomeCtrl {
     public isLoading = true;
 
     public userName;
-    public id;
+    public ids = [];
     public password = "";
     public isExistingUser: boolean = false;
-    public user;
+    public loginUserList = {};
+    public selectedUser;
 
     public defaultAvatar = this.userService.defaultAvatar;
     public signUpError;
@@ -43,12 +44,17 @@ export default class HomeCtrl {
             this.$state.go('index.home.room', {roomName: "General"});
         }
 
-        if (localStorage.getItem('id') !== null) {
-            this.id = localStorage.getItem('id');
+        if (localStorage.getItem('ids') !== null) {
+            this.ids = JSON.parse(localStorage.getItem('ids'));
             this.isExistingUser = true;
-            this.socketService.request('fetch-user', this.id).then((user) => {
-                this.user = user;
-                this.isLoading = false;
+            this.ids.forEach((id) => {
+                this.socketService.request('fetch-user', id).then((user) => {
+                    this.loginUserList[id] = user;
+                    if (this.ids.length == 1) {
+                        this.selectedUser = user;
+                    }
+                    this.isLoading = false;
+                })
             })
         } else {
             this.isLoading = false;
@@ -67,34 +73,44 @@ export default class HomeCtrl {
         });
     }
 
-    public forgetMe() {
-        localStorage.removeItem('id');
-        this.isExistingUser = false;
+    public forgetMe(id) {
+        this.loginError = "";
+        this.ids.splice(this.ids.indexOf(id), 1);
+        delete this.loginUserList[id];
+        localStorage.setItem('ids', JSON.stringify(this.ids));
+        if (this.ids.length == 0) {
+            this.isExistingUser = false;
+        }
+        this.selectedUser = null;
     }
 
-    public login() {
-        this.isLoading = true;
-        this.loginError = "";
-        this.socketService.request('login', { 
-            id: parseInt(localStorage.getItem('id')),
-            password: this.password
-        }).then((data) => {
-            if (data) {
-                this.loggedIn = true;
-                this.isLoading = false;
-                
-                localStorage.setItem('id', data.id);
-                data.password = atob(data.password);
-                this.userService.setUser(data);
-            } else {
-                this.isLoading = false;
-                this.loginError = "Incorrect password, please try again.";
-                this.password = "";
-            }
-        });
+    public login(id) {
+        if (this.selectedUser) {
+            this.isLoading = true;
+            this.loginError = "";
+            this.socketService.request('login', { 
+                id: parseInt(id),
+                password: this.password
+            }).then((data) => {
+                if (data) {
+                    this.loggedIn = true;
+                    this.isLoading = false;
+                    
+                    data.password = atob(data.password);
+                    this.userService.setUser(data);
+                } else {
+                    this.isLoading = false;
+                    this.loginError = "Incorrect password, please try again.";
+                    this.password = "";
+                }
+            });
+        } else {
+            this.loginError = "Please select an account first.";
+        }
     }
 
     public signUp() {
+        this.loginError = "";
         if (this.userName && this.userName.length > 0) {
             this.isLoading = true;
             this.signUpError = "";
@@ -103,7 +119,8 @@ export default class HomeCtrl {
                     this.loggedIn = true;
                     this.isLoading = false;
 
-                    localStorage.setItem('id', data.id);
+                    this.ids.push(data.id)
+                    localStorage.setItem('ids', JSON.stringify(this.ids));
                     this.userService.setUser(data);
                 }
                 else {
