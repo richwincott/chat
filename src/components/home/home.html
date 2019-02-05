@@ -1,5 +1,6 @@
 <div ng-if="!$ctrl.loggedIn && !$ctrl.isLoading" class="row">
-    <div class="col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-3">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3" style="padding: 0px 15px">
+        <br/>
         <div ng-if="$ctrl.isExistingUser">
             <p>Welcome back, choose an account below and enter your password...</p>
             <ul class="list-unstyled" style="margin: 20px 0px;">
@@ -26,6 +27,7 @@
         </form>
         <br/>
         <form ng-submit="$ctrl.signUp()">
+            <p ng-if="!$ctrl.isExistingUser">Welcome back...</p>
             <p>Please enter a username...</p>
             <div class="input-group">
                 <input class="form-control" ng-model="$ctrl.userName" />
@@ -40,11 +42,11 @@
 </div>
 <div ng-if="$ctrl.loggedIn" style="display: flex;" ng-init="showSidebar = true">
     <div id="room" class="padding" ng-style="{flex: showSidebar ? 9 : 1}">          
-        <a ng-click="showSidebar = !showSidebar" class="sidebar-toggle hidden-xs hidden-sm">Toggle sidebar</a>
-        <a ng-click="$ctrl.openSidebar()" class="sidebar-toggle hidden-md hidden-lg">Toggle sidebar</a>
-        <div ui-view style="display: flex; flex-direction: column; width: 100%; height: calc(100% - 20px); top: -20px;
+        <a ng-click="showSidebar = !showSidebar" class="btn btn-default sidebar-toggle hidden-xs hidden-sm">Toggle sidebar</a>
+        <a ng-click="$ctrl.openSidebar()" class="btn btn-default sidebar-toggle hidden-md hidden-lg">Open sidebar</a>
+        <div ui-view style="display: flex; flex-direction: column; width: 100%; height: calc(100% - 20px); top: -40px;
         position: relative;
-        margin-bottom: -20px;"></div>
+        margin-bottom: -40px;"></div>
     </div>
     <sidebar class="hidden-xs hidden-sm padding" ng-style="{flex: showSidebar ? 3 : 0, display: !showSidebar ? 'none' : 'flex'}"></sidebar> 
 </div>
