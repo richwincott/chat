@@ -1,7 +1,7 @@
 <div style="display: flex; flex-direction: column; width: 100%;">
     <div><a ng-if="$ctrl.me.admin" ng-click="$ctrl.toggleDeleted()"><span ng-if="$ctrl.showDeleted">Hide</span><span ng-if="!$ctrl.showDeleted">Show</span> deleted</a></div>
     <br/>
-    <ul class="list-unstyled messages" style="flex: 89%;">
+    <ul class="list-unstyled messages" style="flex: 100%;">
         <li ng-repeat="date in $ctrl.dates">
             <hr />
             <p class="text-center">{{date | date:'dd-MM-yyyy'}}</p>

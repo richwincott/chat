@@ -4,7 +4,6 @@
             <button class="btn btn-default" style="flex: 1" ng-click="$ctrl.tabState = 'rooms'" ng-class="{'selected': $ctrl.tabState == 'rooms'}">Rooms</button>
             <button class="btn btn-default" style="flex: 1" ng-click="$ctrl.tabState = 'users'" ng-class="{'selected': $ctrl.tabState == 'users'}">Users</button>
         </div>
-        <br/>
         <div class="tab-content" ng-switch="$ctrl.tabState">
             <div ng-switch-when="rooms">
                 <div>
