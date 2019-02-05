@@ -7,7 +7,6 @@ body {
     }
     .sidebar.modal-body {
         padding: 0px !important;
-        border-radius: 6px;
     }
     .tab-content, .bottom {
         padding: 0px 15px;
@@ -24,6 +23,21 @@ body {
     #room {
         width: 100%;
     }
+    .sidebar.modal-body {
+        padding: 0px !important;
+    }
+    .sidebar {
+        .tab-content, .bottom {
+            padding: 3px 15px;
+            padding-top: 10px;
+        }
+    }
+}
+
+.modal-content {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    border: 1px solid rgb(139, 119, 119);
 }
 
 form.no-margin {
@@ -156,6 +170,7 @@ h5 {
 .sidebar {
     background-color: #f8f8f8;
     overflow: hidden;
+    border: 1px solid #ddd;
 }
 
 .sidebar-toggle {
@@ -180,7 +195,8 @@ h5 {
 }
 
 .modal-body {
-    padding: 20px 30px;
+    padding: 10px 18px;
+    border-radius: 6px;
 }
 
 .info {
