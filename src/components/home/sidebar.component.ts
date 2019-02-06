@@ -116,6 +116,20 @@ class SidebarCtrl {
         }
     }
 
+    public offlineUserCount() {
+        let count = 0;
+        for (let key in this.users) {
+            if (!this.users[key].online) {
+                count++;
+            }
+        };
+        return count;
+    }
+
+    public objectLength(obj) {
+        return Object.keys(obj).length;
+    }
+
     public dateCheck(room) {
         return new Date(room.lastUpdate) > room.lastAccessed;
     }

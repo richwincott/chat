@@ -1,6 +1,9 @@
 <div style="display: flex; flex-direction: column; width: 100%;">
-    <div><a class="btn btn-default" ng-if="$ctrl.me.admin" ng-click="$ctrl.toggleDeleted()"><span ng-if="$ctrl.showDeleted">Hide</span><span ng-if="!$ctrl.showDeleted">Show</span> deleted</a></div>
-    <br/>
+    <div style="height: 40px; margin-bottom: 7px;">
+        <a class="btn btn-default" ng-if="$ctrl.me.admin" ng-click="$ctrl.toggleDeleted()">
+            <span ng-if="$ctrl.showDeleted">Hide</span>
+            <span ng-if="!$ctrl.showDeleted">Show</span> deleted</a>
+    </div>
     <ul class="list-unstyled messages" style="flex: 100%;">
         <li ng-repeat="date in $ctrl.dates">
             <hr />

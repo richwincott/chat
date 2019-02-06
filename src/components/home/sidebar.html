@@ -18,7 +18,7 @@
                                 {{room.name}}<br/>
                             </span>
                             <span ng-if="room.private">
-                                <i class="fa fa-user"></i> {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}}
+                                {{$ctrl.userById(room.name.split(':')[0]).userName.split('/')[0]}} - {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}} &nbsp;<i class="fa fa-lock"></i>
                             </span>
                             <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"><br/>New message!</span>
                         </button>
@@ -31,7 +31,7 @@
                     <br/><br/>
                 </div>
                 <ul class="list-unstyled users-list">
-                    <li ng-if="user.online || $ctrl.showOffline" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:15px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
+                    <li ng-if="(user.online || $ctrl.showOffline) && user.id !== $ctrl.me.id" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:15px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
                         <div class="pull-left">
                             <img class="avatar" ng-src="{{user.avatar ? user.avatar : $ctrl.defaultAvatar}}" ng-click="$ctrl.openAvatar(user)" style="height:40px; width:40px; cursor:pointer;" />
                         </div>
@@ -45,6 +45,7 @@
                             <label ng-if="user.currentRoom.indexOf(':') > -1" class="label label-danger">PRIVATE</label>
                         </small>
                     </li>
+                    <li ng-if="$ctrl.offlineUserCount() + 1 === $ctrl.objectLength($ctrl.users) && !$ctrl.me.admin" class="text-center"><br/>No other users online..</li>
                 </ul>
             </div>
         </div>
@@ -61,7 +62,10 @@
                 <span ng-if="$ctrl.me.admin">Admin</span>
             </label>&nbsp;
             <label ng-if="$ctrl.me.currentRoom.indexOf(':') == -1" class="label label-default">{{$ctrl.me.currentRoom}}</label>
-            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">{{$ctrl.userById($ctrl.me.currentRoom.split(':')[1]).userName.split('/')[0]}}</label>
+            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">
+                {{$ctrl.userById($ctrl.me.currentRoom.split(':')[0]).userName.split('/')[0]}} - 
+                {{$ctrl.userById($ctrl.me.currentRoom.split(':')[1]).userName.split('/')[0]}}
+            </label>
         </small><br/>
         <a class="editProfileLink" ng-click="$ctrl.openEditProfile()">Edit Profile</a>
     </div>

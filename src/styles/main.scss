@@ -41,6 +41,13 @@
     border: 1px solid rgb(139, 119, 119);
 }
 
+.modal-backdrop {
+    visibility: hidden !important;
+}
+.modal.in {
+    background-color: rgba(0,0,0,0.5);
+}
+
 form.no-margin {
     margin-bottom: 2px;
 }
