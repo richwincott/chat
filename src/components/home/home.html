@@ -27,8 +27,7 @@
         </form>
         <br/>
         <form ng-submit="$ctrl.signUp()">
-            <p ng-if="!$ctrl.isExistingUser">Welcome back...</p>
-            <p>Please enter a username...</p>
+            <p><span ng-if="!$ctrl.isExistingUser">Welcome, p</span><span ng-if="$ctrl.isExistingUser">P</span>lease enter a username...</p>
             <div class="input-group">
                 <input class="form-control" ng-model="$ctrl.userName" />
                 <div class="input-group-addon">     
