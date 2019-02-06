@@ -33,9 +33,9 @@
 
     <form ng-submit="$ctrl.send()" class="no-margin bottom">
         <div class="giphy-container" ng-if="$ctrl.giphy_show">
+            <div class="text-center" style="width: 200px; text-overflow: ellipsis;">{{$ctrl.gif.title}}</div>
+            <img class="gif" ng-src="{{$ctrl.gif.images.fixed_width.url}}" />
             <div class="text-center">
-                <div style="width: 200px; text-overflow: ellipsis;">{{$ctrl.gif.title}}</div>
-                <div class="gif" ng-style="{backgroundImage: 'url(' + $ctrl.gif.images.fixed_width.url + ')'}"></div>
                 <button type="button" class="btn btn-red selected" ng-click="$ctrl.sendGif()">Send</button>
                 <button type="button" class="btn btn-default" ng-click="$ctrl.fetchGif()">Shuffle</button>
                 <button type="button" class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>

@@ -89,7 +89,7 @@ export default class RoomCtrl {
 
     public fetchGif() {
         this.giphy_offset++;
-        this.$http.get('http://api.giphy.com/v1/gifs/search?q=' + this.giphy_query + '&api_key=' + this.config.giphyApiKey + '&limit=1&offset=' + (this.giphy_offset - 1))
+        this.$http.get('http://api.giphy.com/v1/gifs/search?q=' + this.giphy_query + '&api_key=' + this.config.giphyApiKey + '&limit=1&rating=r&offset=' + (this.giphy_offset - 1))
             .then((response: ng.IHttpResponse<IGiphyResponse>) => {
                 this.gif = response.data.data[0];
             })
