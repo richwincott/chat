@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development",
+    "start": "webpack-dev-server --host 0.0.0.0 --mode development",
     "socket": "node server.js"
   },
   "author": "me",

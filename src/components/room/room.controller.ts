@@ -1,4 +1,3 @@
-let viewImageHTML = require('./viewImage.html');
 let userTooltip = require('./userTooltip.html');
 
 interface IGiphyResponse {
@@ -28,7 +27,7 @@ export default class RoomCtrl {
     public giphy_offset = 0;
     public giphy_show = false;
 
-    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "$uibModal"];
+    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config"];
 
     constructor(
         private $scope: ng.IScope,
@@ -39,8 +38,7 @@ export default class RoomCtrl {
         private userService,
         private chatService,
         private socketService,
-        private config: IConfig,
-        private $uibModal: ng.ui.bootstrap.IModalService
+        private config: IConfig 
     ) {
         this.$scope.$watch(() => this.uploadedPictureObject.base64, (newValue, oldValue) => {
             if (newValue != oldValue) {
@@ -165,25 +163,7 @@ export default class RoomCtrl {
     };
 
     public openImage(message) {
-        this.$uibModal.open({
-            animation: true,
-            templateUrl: viewImageHTML,
-            size: 'sm',
-            bindToController: true,
-            controllerAs: '$ctrl',
-            resolve: {
-                selected: message,
-                users: this.users
-            },
-            controller: ['selected', 'users', function(selected, users) {
-                this.users = users;
-                this.selected = selected;
-            }]
-        }).result.then(() => {
-            // closed the modal
-        }, () => {
-            // cancelled the modal
-        });
+        this.$state.go('index.home.room.image', {messageId: message._id});
     }
 
     scrollToBottom = () => {

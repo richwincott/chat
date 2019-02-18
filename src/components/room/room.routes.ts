@@ -13,6 +13,10 @@ function RoomConfig($stateProvider, $urlRouterProvider) {
         params: {
           private: false
         }
+      })
+      .state('index.home.room.image', {
+        url: '/:messageId',
+        component: 'imageViewer',
       });
 };
   
