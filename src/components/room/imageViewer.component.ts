@@ -11,43 +11,72 @@ class ImageViewer {
         private $stateParams: ng.ui.IStateParamsService
     ) {}
 
-    get users() {
-        return this.chatService.users;
-    }
-
-    get messages(): any[] {
-        return this.chatService.messages;
-    }
-
     $onInit() {
-        let message, user;
-
-        switch(this.$stateParams.type) {
-            case 'message':
-                message = this.messages.filter((message) => message._id == this.$stateParams.id)[0];
-                break;
-            case 'avatar':
-                user = this.userById(this.$stateParams.id);
-                break;
-        }
-
         this.$uibModal.open({
             animation: true,
             templateUrl: imageViewerHTML,
-            size: 'sm',
             bindToController: true,
             controllerAs: '$ctrl',
             resolve: {
-                type: () => this.$stateParams.type,
-                selected: message ? message : user,
-                users: this.users
+                id: () => this.$stateParams.id,
+                type: () => this.$stateParams.type
             },
-            controller: ['type', 'selected', 'users', 'userService', function(type, selected, users, userService) {
-                this.type = type;
-                this.users = users;
-                this.selected = selected;
-                this.defaultAvatar = userService.defaultAvatar;
-            }]
+            controller: class InnerImageViewer {
+                public selected;
+
+                $inject: string[] = ['$scope', 'id', 'type', 'userService', 'chatService'];
+                
+                constructor(
+                    private $scope: ng.IScope,
+                    private id,
+                    public type,
+                    private userService,
+                    private chatService
+                ) {
+                    this.$scope.$watch(() => { 
+                        return {
+                            messages: this.messages,
+                            users: this.users
+                        }
+                    }, this.dataChanged.bind(this), true);
+                }
+
+                get users() {
+                    return this.chatService.users;
+                }
+
+                get messages() {
+                    return this.chatService.messages;
+                }
+
+                get defaultAvatar() {
+                    return this.userService.defaultAvatar;
+                }
+
+                private dataChanged(newValue, oldValue) {
+                    if (newValue.messages.length > 0 && Object.keys(newValue.users).length > 0) {
+                        this.setSelected();
+                    }
+                }
+
+                public setSelected() {
+                    switch(this.type) {
+                        case 'message':
+                            this.selected = this.messages.filter((message) => message._id == this.id)[0];
+                            break;
+                        case 'avatar':
+                            this.selected = this.userById(this.id);
+                            break;
+                    }
+                }
+
+                public userById(id) {
+                    if (this.users) {
+                        return this.users[parseInt(id)];
+                    }
+                }
+
+            }
         }).result.then(() => {
             // closed the modal
             this.goUpOneState();
@@ -55,12 +84,6 @@ class ImageViewer {
             // cancelled the modal
             this.goUpOneState();
         });
-    }
-
-    public userById(id) {
-        if (this.users) {
-            return this.users[parseInt(id)];
-        }
     }
 
     private goUpOneState() {
