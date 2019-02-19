@@ -15,7 +15,7 @@ function RoomConfig($stateProvider, $urlRouterProvider) {
         }
       })
       .state('index.home.room.image', {
-        url: '/:messageId',
+        url: '/:type/:id',
         component: 'imageViewer',
       });
 };

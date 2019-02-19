@@ -1,4 +1,4 @@
-<div class="modal-body text-center">
+<div ng-if="$ctrl.type === 'message'" class="modal-body text-center">
     <p class="text-center">
         <span ng-style="{color: $ctrl.users[$ctrl.selected.userId].userName.split('/')[1]}">{{$ctrl.users[$ctrl.selected.userId].userName.split('/')[0]}}</span>
         -
@@ -7,4 +7,8 @@
     <div style="overflow:scroll">
         <img ng-src="{{$ctrl.selected.message}}" />
     </div>
+</div>
+
+<div ng-if="$ctrl.type === 'avatar'" class="modal-body text-center">
+    <img ng-src="{{$ctrl.selected.avatar ? $ctrl.selected.avatar : $ctrl.defaultAvatar}}" style="max-width:100%" />
 </div>

@@ -1,6 +1,5 @@
 let sidebarHtml = require('./sidebar.html');
 let editProfileHTML = require('./editProfile.html');
-let avatarHTML = require('./avatar.html');
 
 class SidebarCtrl {
     public showOffline = false;
@@ -72,24 +71,7 @@ class SidebarCtrl {
     }
 
     public openAvatar(user) {
-        this.$uibModal.open({
-            animation: true,
-            templateUrl: avatarHTML,
-            size: 'sm',
-            bindToController: true,
-            controllerAs: '$ctrl',
-            resolve: {
-                selected: user
-            },
-            controller: ['selected', 'userService', function(selected, userService) {
-                this.defaultAvatar = userService.defaultAvatar;
-                this.selected = selected;
-            }]
-        }).result.then(() => {
-            // closed the modal
-        }, () => {
-            // cancelled the modal
-        });
+        this.$state.go('index.home.room.image', {type: 'avatar', id: user.id});
     }
     
     public selectRoom(roomName, priv?) {

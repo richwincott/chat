@@ -163,7 +163,7 @@ export default class RoomCtrl {
     };
 
     public openImage(message) {
-        this.$state.go('index.home.room.image', {messageId: message._id});
+        this.$state.go('index.home.room.image', {type: 'message', id: message._id});
     }
 
     scrollToBottom = () => {

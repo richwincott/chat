@@ -31,19 +31,21 @@
                     <br/><br/>
                 </div>
                 <ul class="list-unstyled users-list">
-                    <li ng-if="(user.online || $ctrl.showOffline) && user.id !== $ctrl.me.id" ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:15px; height:40px; cursor: pointer;" ng-class="{'faint': !user.online}">
+                    <li ng-if="(user.online || $ctrl.showOffline) && user.id !== $ctrl.me.id" ng-repeat="user in $ctrl.users track by $index" style="margin-bottom:15px; height:40px;" ng-class="{'faint': !user.online}">
                         <div class="pull-left">
                             <img class="avatar" ng-src="{{user.avatar ? user.avatar : $ctrl.defaultAvatar}}" ng-click="$ctrl.openAvatar(user)" style="height:40px; width:40px; cursor:pointer;" />
                         </div>
-                        <h5 ng-style="{color: user.userName.split('/')[1]}">{{user.userName.split('/')[0]}}</h5><br/>
-                        <small>
-                            <label class="label" ng-class="{'label-success': user.admin, 'label-warning': !user.admin}">
-                                <span ng-if="!user.admin">Basic</span>
-                                <span ng-if="user.admin">Admin</span>
-                            </label>&nbsp;
-                            <label ng-if="user.currentRoom.indexOf(':') == -1" class="label label-default">{{user.currentRoom}}</label>
-                            <label ng-if="user.currentRoom.indexOf(':') > -1" class="label label-danger">PRIVATE</label>
-                        </small>
+                        <div ng-click="$ctrl.selectRoom($ctrl.me.id + ':' + user.id, true)" style="cursor: pointer;">
+                            <h5 ng-style="{color: user.userName.split('/')[1], marginBottom: '5px', marginTop: '2px'}">{{user.userName.split('/')[0]}}</h5><br/>
+                            <small>
+                                <label class="label" ng-class="{'label-success': user.admin, 'label-warning': !user.admin}" style="cursor: pointer;">
+                                    <span ng-if="!user.admin">Basic</span>
+                                    <span ng-if="user.admin">Admin</span>
+                                </label>&nbsp;
+                                <label ng-if="user.currentRoom.indexOf(':') == -1" class="label label-default" style="cursor: pointer;">{{user.currentRoom}}</label>
+                                <label ng-if="user.currentRoom.indexOf(':') > -1" class="label label-danger" style="cursor: pointer;">PRIVATE</label>
+                            </small>
+                        </div>
                     </li>
                     <li ng-if="$ctrl.offlineUserCount() + 1 === $ctrl.objectLength($ctrl.users) && !$ctrl.me.admin" class="text-center"><br/>No other users online..</li>
                 </ul>
