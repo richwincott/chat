@@ -392,6 +392,13 @@ io.on('connection', function(socket){
                 })
             });
         })
+
+        socket.on("user-typing", function (data) {
+            fetchUsers().then((users) => {
+                //console.log(users[socket.userId].userName.split('/')[0] + ' is typing...');
+                socket.broadcast.to(users[socket.userId].currentRoom).emit('user-typing', socket.userId);
+            })
+        })
     }
 
     socket.on('disconnect', function() {
@@ -420,6 +427,18 @@ function roomExists(rooms, roomName) {
     return found ? true : false;
 }
 
+
+var stdin = process.stdin;
+
 http.listen(3004, function(){
-  console.log('listening on *:3004');
+    console.log('listening on *:3004');
+
+    // handle input from stdin
+    stdin.resume(); // see http://nodejs.org/docs/v0.4.7/api/process.html#process.stdin
+    stdin.on('data', function(chunk) { // called on each line of input
+        var line=chunk.toString().replace(/\n/,'\\n');
+        console.log('stdin:received line:'+line);
+    }).on('end', function() { // called when stdin closes (via ^D)
+        console.log('stdin:closed');
+    });
 });

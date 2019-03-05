@@ -3,12 +3,14 @@ export default class ChatService {
     public messages;
     public rooms;
     public dates = [];
+    public typing = [];
 
-    static $inject = ["$rootScope", "socketService"];
+    static $inject = ["$rootScope", "socketService", "$timeout"];
 
     constructor(
         private $rootScope,
-        private socketService
+        private socketService,
+        private $timeout: ng.ITimeoutService
     ) {
         // requests
         this.socketService.request('fetch-users').then((users) => {
@@ -66,6 +68,14 @@ export default class ChatService {
             this.$rootScope.$apply();
         })
 
+        this.socketService.socket().on('user-typing', (data) => {
+            this.typing.push(data);
+            this.$timeout(() => {
+                this.typing.splice(this.typing.indexOf(data), 1);
+            }, 3000);
+            this.$rootScope.$apply();
+        });
+
 
 
         // profile stuff
@@ -95,6 +105,10 @@ export default class ChatService {
             this.messages = data;
             this.formatMessages(true);
         });
+    }
+
+    public userIsTyping() {
+        this.socketService.request('user-typing');
     }
 
     public formatMessages(clear?) {

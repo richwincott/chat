@@ -27,7 +27,9 @@ export default class RoomCtrl {
     public giphy_offset = 0;
     public giphy_show = false;
 
-    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config"];
+    private lastKeyPress = this.moment();
+
+    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "moment"];
 
     constructor(
         private $scope: ng.IScope,
@@ -38,7 +40,8 @@ export default class RoomCtrl {
         private userService,
         private chatService,
         private socketService,
-        private config: IConfig 
+        private config: IConfig,
+        private moment
     ) {
         this.$scope.$watch(() => this.uploadedPictureObject.base64, (newValue, oldValue) => {
             if (newValue != oldValue) {
@@ -64,6 +67,10 @@ export default class RoomCtrl {
         return this.chatService.messages;
     }
 
+    get typing() {
+        return this.chatService.typing;
+    }
+
     $onInit() {
         this.defaultAvatar = this.userService.defaultAvatar;
         this.userTooltip = userTooltip;
@@ -75,6 +82,13 @@ export default class RoomCtrl {
             this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
             this.chatService.fetchMessages(this.$stateParams.roomName);
         }        
+    }
+
+    public userTyping() {
+        if (this.lastKeyPress < this.moment().subtract(3, 'seconds')) {
+            this.lastKeyPress = this.moment();
+            this.chatService.userIsTyping();
+        }
     }
 
     private associatedUser(roomName) {

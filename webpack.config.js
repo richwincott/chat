@@ -9,7 +9,7 @@ const webpack = require('webpack');
 module.exports = {
     entry: {
         app: './src/app.ts',
-        vendor: ['angular', 'angular-sanitize', 'angular-animate', '@uirouter/angularjs', 'angular-ui-bootstrap', 'angular-base64-upload'],
+        vendor: ['angular', 'angular-sanitize', 'angular-animate', '@uirouter/angularjs', 'angular-ui-bootstrap', 'angular-base64-upload', 'angular-moment'],
         styles: './src/styles/index.scss'
     },
     output: {
