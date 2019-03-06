@@ -1,34 +1,56 @@
+body {
+    overflow-x: hidden;
+    overscroll-behavior: none;
+}
+
 @media (min-width: 992px) {
     body {
-        margin: 1.5rem 0 1.7rem 0;
+        margin: 1.5rem 0 1.7rem;
     }
+
     .sidebar.modal-body {
-        padding: 0px !important;
+        padding: 0 !important;
     }
-    .tab-content, .bottom {
-        padding: 0px 15px;
+
+    .tab-content,
+    .bottom {
+        padding: 0 15px;
     }
+
     form.bottom {
-        padding: 0px;
+        padding: 0;
     }
 }
 
 @media (max-width: 991px) {
     body {
-        margin: 0px;
+        margin: 0;
     }
+
     form.no-margin {
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
+
     #room {
         width: 100%;
-        padding: 8px 0px 12px;
+        padding: 8px 0 12px;
     }
+
     .sidebar.modal-body {
-        padding: 0px !important;
+        padding: 0 !important;
     }
+
+    sidebar {
+        &::before {
+            display: none;
+        }
+    }
+
     .sidebar {
-        .tab-content, .bottom {
+        border: 1px solid #ddd;
+
+        .tab-content,
+        .bottom {
             padding: 3px 15px;
             padding-top: 10px;
         }
@@ -36,8 +58,8 @@
 }
 
 .modal-content {
-    box-shadow: none;
     -webkit-box-shadow: none;
+    box-shadow: none;
     border: 1px solid rgb(139, 119, 119);
 }
 
@@ -63,43 +85,48 @@ input {
 }
 
 .btn {
-    border-radius: 0px;
+    border-radius: 0;
     background-color: transparent;
 }
 
 .input-group-addon {
-    padding: 0px;
+    padding: 0;
+
+    .btn {
+        background-color: #f9f9f9 !important;
+        line-height: 18px;
+
+        &:hover {
+            background-color: #eee !important;
+        }
+    }
 }
 
-input:focus, input:active {
+input:focus,
+input:active {
     background-color: #f4f4f4 !important;
 }
 
-button, .input-group-addon, .input-group-addon .btn {
-    border-radius: 0px !important;
+button,
+.input-group-addon,
+.input-group-addon .btn {
+    border-radius: 0 !important;
     outline: none !important;
 }
-
-.input-group-addon .btn {
-    background-color: #f9f9f9 !important;
-    line-height: 18px;
-}
-
-.input-group-addon .btn:hover {
-    background-color: #eee !important;
-} 
 
 .input-group .btn:last-child {
     border-left: 1px red solid !important;
 }
 
 .btn-default {
-    border: 0px;
+    border: 0;
     border-bottom: 2px solid #ddd;
-    padding: 7px 12px 6px 12px;
+    padding: 7px 12px 6px;
     margin-bottom: 5px;
 
-    &.selected, &:active, &:active:focus {
+    &.selected,
+    &:active,
+    &:active:focus {
         box-shadow: none;
         -webkit-box-shadow: none;
         background-color: #f3f3f3;
@@ -114,7 +141,8 @@ button, .input-group-addon, .input-group-addon .btn {
         color: #f9f9f9;
     }
 
-    &.selected, &:active {
+    &.selected,
+    &:active {
         background-color: #d43f3a;
         border-bottom: 2px solid #d43f3a;
     }
@@ -139,7 +167,7 @@ h4 {
 
 h5 {
     display: inline-block;
-    margin: 0px;
+    margin: 0;
 }
 
 .nav-pills li a {
@@ -150,35 +178,49 @@ h5 {
 
 .editProfileLink {
     display: inline-block;
-    margin-top:3px;
+    margin-top: 3px;
 }
 
 .faded {
-    opacity: 0.6;
+    opacity: .6;
     font-size: smaller;
 }
 
 .bubble {
-    background-color:#f3f3f3;
+    background-color: #f3f3f3;
     border-radius: 4px;
-    padding:6px 8px;
-    margin-top:5px;
-    margin-bottom:5px;
+    padding: 6px 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-.users-list, .room-list {
-    max-height:calc(100% - 195px);
+.users-list,
+.room-list {
+    max-height: calc(100% - 195px);
     overflow-y: scroll;
 }
 
 .faint {
-    opacity: 0.3;
+    opacity: .3;
+}
+
+sidebar {
+    &::before {
+        position: absolute;
+        content: '';
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+        background-color: #f8f8f8;
+        right: auto;
+        top: 0;
+        margin-left: -10px;
+    }
 }
 
 .sidebar {
     background-color: #f8f8f8;
     overflow: hidden;
-    border: 1px solid #ddd;
 }
 
 .sidebar-toggle {
@@ -192,23 +234,24 @@ h5 {
     text-decoration: none;
 }
 
-.borderless td, .borderless th {
+.borderless td,
+.borderless th {
     border: none !important;
 }
 
 .messages {
     overflow-y: scroll;
-    padding-right:12px;
+    padding-right: 12px;
 }
 
 .modal-body {
-    padding: 10px 18px;
     border-radius: 6px;
+    padding: 10px 18px;
 }
 
 .info {
-    font-size:12px;
-    color: #666
+    font-size: 12px;
+    color: #666;
 }
 
 a {
@@ -216,8 +259,8 @@ a {
 }
 
 .avatar {
-    height:40px;
-    width:40px;
+    height: 40px;
+    width: 40px;
     border-radius: 5px;
     margin-right: 10px;
 }
@@ -232,6 +275,6 @@ a {
     border-bottom: none;
 
     .gif {
-        margin: 4px 0px;
+        margin: 4px 0;
     }
 }
