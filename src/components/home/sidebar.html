@@ -52,23 +52,25 @@
             </div>
         </div>
     </div>
-    <div class="bottom" style="margin-bottom: 10px;">
+    <div class="bottom" style="display: flex;">
         <br/>
-        <div class="pull-left">
+        <div>
             <img class="avatar" ng-src="{{$ctrl.me.avatar ? $ctrl.me.avatar : $ctrl.defaultAvatar}}" ng-click="$ctrl.openAvatar($ctrl.me)" style="height:70px; width:70px; cursor:pointer;" />
         </div>
-        <h4 ng-style="{color: $ctrl.me.userName.split('/')[1]}">{{$ctrl.me.userName.split('/')[0]}}</h4><br/>
-        <small>
-            <label class="label" ng-class="{'label-success': $ctrl.me.admin, 'label-default': !$ctrl.me.admin}">
-                <span ng-if="!$ctrl.me.admin">Basic</span>
-                <span ng-if="$ctrl.me.admin">Admin</span>
-            </label>&nbsp;
-            <label ng-if="$ctrl.me.currentRoom.indexOf(':') == -1" class="label label-default">{{$ctrl.me.currentRoom}}</label>
-            <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">
-                {{$ctrl.userById($ctrl.me.currentRoom.split(':')[0]).userName.split('/')[0]}} - 
-                {{$ctrl.userById($ctrl.me.currentRoom.split(':')[1]).userName.split('/')[0]}}
-            </label>
-        </small><br/>
-        <a class="editProfileLink" ng-click="$ctrl.openEditProfile()">Edit Profile</a>
+        <div style="flex: 1;">
+            <h4 ng-style="{color: $ctrl.me.userName.split('/')[1]}" style="margin-top: 7px;">{{$ctrl.me.userName.split('/')[0]}}</h4><br/>
+            <small>
+                <label class="label" ng-class="{'label-success': $ctrl.me.admin, 'label-default': !$ctrl.me.admin}">
+                    <span ng-if="!$ctrl.me.admin">Basic</span>
+                    <span ng-if="$ctrl.me.admin">Admin</span>
+                </label>&nbsp;
+                <label ng-if="$ctrl.me.currentRoom.indexOf(':') == -1" class="label label-default">{{$ctrl.me.currentRoom}}</label>
+                <label ng-if="$ctrl.me.currentRoom.indexOf(':') > -1" class="label label-danger">
+                    {{$ctrl.userById($ctrl.me.currentRoom.split(':')[0]).userName.split('/')[0]}} - 
+                    {{$ctrl.userById($ctrl.me.currentRoom.split(':')[1]).userName.split('/')[0]}}
+                </label>
+            </small><br/>
+            <a class="editProfileLink" ng-click="$ctrl.openEditProfile()">Edit Profile</a>
+        </div>
     </div>
 </div>

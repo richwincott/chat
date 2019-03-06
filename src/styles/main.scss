@@ -12,9 +12,17 @@ body {
         padding: 0 !important;
     }
 
-    .tab-content,
-    .bottom {
+    .tab-content {
         padding: 0 15px;
+    }
+
+    .top,
+    .bottom {
+        padding: 0 8px;
+    }
+
+    .bottom {
+        padding-bottom: 2px;
     }
 
     form.bottom {
@@ -51,8 +59,11 @@ body {
 
         .tab-content,
         .bottom {
-            padding: 3px 15px;
-            padding-top: 10px;
+            padding: 3px 15px 13px;
+        }
+
+        .tab-content {
+            padding-top: 8px;
         }
     }
 }
@@ -66,8 +77,9 @@ body {
 .modal-backdrop {
     visibility: hidden !important;
 }
+
 .modal.in {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, .5);
 }
 
 form.no-margin {
@@ -214,7 +226,7 @@ sidebar {
         background-color: #f8f8f8;
         right: auto;
         top: 0;
-        margin-left: -10px;
+        margin-left: -7px;
     }
 }
 
