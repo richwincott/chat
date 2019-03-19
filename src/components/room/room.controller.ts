@@ -1,3 +1,5 @@
+import { BaseController } from "../../app.base.controller";
+
 let userTooltip = require('./userTooltip.html');
 
 interface IGiphyResponse {
@@ -10,11 +12,10 @@ interface IConfig {
     giphyApiKey: string
 }
 
-export default class RoomCtrl {
+export default class RoomCtrl extends BaseController {
     public notifyMe = false;
     public editingMessage = -1;
     public showDeleted = false;
-    public defaultAvatar;
     public userTooltip;
 
     public message;
@@ -29,20 +30,20 @@ export default class RoomCtrl {
 
     private lastKeyPress = this.moment();
 
-    static $inject = ["$scope", "$http", "$state", "$stateParams", "$timeout", "userService", "chatService", "socketService", "config", "moment"];
+    static $inject = ["$injector", "$scope", "$http", "$state", "$stateParams", "$timeout", "socketService", "config", "moment"];
 
     constructor(
+        $injector,
         private $scope: ng.IScope,
         private $http: ng.IHttpService,
         private $state: ng.ui.IStateService,
         private $stateParams: ng.ui.IStateParamsService,
         private $timeout: ng.ITimeoutService,
-        private userService,
-        private chatService,
         private socketService,
         private config: IConfig,
         private moment
     ) {
+        super($injector);
         this.$scope.$watch(() => this.uploadedPictureObject.base64, (newValue, oldValue) => {
             if (newValue != oldValue) {
                 this.message = 'data:image/png;base64,' + newValue;
@@ -51,28 +52,7 @@ export default class RoomCtrl {
         })
     }
 
-    get me() {
-        return this.userService.user;
-    }
-
-    get users() {
-        return this.chatService.users;
-    }
-
-    get dates() {
-        return this.chatService.dates;
-    }
-
-    get messages() {
-        return this.chatService.messages;
-    }
-
-    get typing() {
-        return this.chatService.typing;
-    }
-
     $onInit() {
-        this.defaultAvatar = this.userService.defaultAvatar;
         this.userTooltip = userTooltip;
         
         if (!this.associatedUser(this.$stateParams.roomName)) {

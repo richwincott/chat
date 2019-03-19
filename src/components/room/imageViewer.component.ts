@@ -1,12 +1,13 @@
+import { BaseController } from "../../app.base.controller";
+
 let imageViewerHTML = require('./imageViewer.html');
 
 class ImageViewer {
 
-    static $inject = ['$uibModal', 'chatService', '$state', '$stateParams'];
+    static $inject = ['$uibModal', '$state', '$stateParams'];
 
     constructor(
         private $uibModal: ng.ui.bootstrap.IModalService,
-        private chatService,
         private $state: ng.ui.IStateService,
         private $stateParams: ng.ui.IStateParamsService
     ) {}
@@ -21,36 +22,24 @@ class ImageViewer {
                 id: () => this.$stateParams.id,
                 type: () => this.$stateParams.type
             },
-            controller: class InnerImageViewer {
+            controller: class InnerImageViewer extends BaseController {
                 public selected;
 
-                $inject: string[] = ['$scope', 'id', 'type', 'userService', 'chatService'];
+                $inject: string[] = ['$injector', '$scope', 'id', 'type'];
                 
                 constructor(
+                    $injector,
                     private $scope: ng.IScope,
                     private id,
-                    public type,
-                    private userService,
-                    private chatService
+                    public type
                 ) {
+                    super($injector);
                     this.$scope.$watch(() => { 
                         return {
                             messages: this.messages,
                             users: this.users
                         }
                     }, this.dataChanged.bind(this), true);
-                }
-
-                get users() {
-                    return this.chatService.users;
-                }
-
-                get messages() {
-                    return this.chatService.messages;
-                }
-
-                get defaultAvatar() {
-                    return this.userService.defaultAvatar;
                 }
 
                 private dataChanged(newValue, oldValue) {

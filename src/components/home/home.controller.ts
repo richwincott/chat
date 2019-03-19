@@ -1,4 +1,6 @@
-export default class HomeCtrl {
+import { BaseController } from "../../app.base.controller";
+
+export default class HomeCtrl extends BaseController {
     public loggedIn = false;
     public isLoading = true;
 
@@ -9,33 +11,19 @@ export default class HomeCtrl {
     public loginUserList = {};
     public selectedUser;
 
-    public defaultAvatar = this.userService.defaultAvatar;
     public signUpError;
     public loginError;
     
-    static $inject = ["$scope", "$state", "userService", "chatService", "socketService", "$uibModal"];
+    static $inject = ["$injector", "$scope", "$state", "socketService", "$uibModal"];
 
     constructor(
+        $injector,
         private $scope: ng.IScope,
         private $state: ng.ui.IStateService,
-        private userService,
-        private chatService,
         private socketService,
         private $uibModal: ng.ui.bootstrap.IModalService
     ) {
-    
-    }
-
-    get me() {
-        return this.userService.user;
-    }
-
-    get users() {
-        return this.chatService.users;
-    }
-
-    get rooms() {
-        return this.chatService.rooms;
+        super($injector);
     }
 
     $onInit() {

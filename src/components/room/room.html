@@ -41,7 +41,7 @@
                 <button type="button" class="btn btn-default" ng-click="$ctrl.cancelGif()">Cancel</button>
             </div>
         </div>
-        <div style="color: #888; font-size: 13px; padding: 3px 5px;">
+        <div style="display: inline-block; color: #888; font-size: 13px; padding: 3px 5px;">
             <span ng-repeat="userId in $ctrl.typing">{{$ctrl.users[userId].userName.split('/')[0]}} is typing... </span>
         </div>
         <div class="input-group">

@@ -1,5 +1,6 @@
-export default class EditProfile {
-    public defaultAvatar = this.userService.defaultAvatar;
+import { BaseController } from "../../app.base.controller";
+
+export default class EditProfile extends BaseController {
     public adminError = {
         success: true,
         message: ""
@@ -9,26 +10,22 @@ export default class EditProfile {
     };
     public adminKey;
 
-    static $inject = ['$scope', '$uibModalInstance', 'socketService', 'userService', '$timeout', 'showAdminLogin'];
+    static $inject = ['$injector', '$scope', 'socketService', '$timeout', 'showAdminLogin'];
 
     constructor(
+        $injector,
         private $scope: ng.IScope, 
-        private $uibModalInstance, 
         private socketService, 
-        private userService, 
         private $timeout: ng.ITimeoutService, 
         public showAdminLogin: boolean
     ) {
+        super($injector);
         this.$scope.$watch(() => this.uploadedAvatarObject.base64, (newValue, oldValue) => {
             if (newValue != oldValue) {
                 this.me.avatar = 'data:image/png;base64,' + newValue;
                 this.socketService.socket().emit('set-avatar', this.me.avatar);
             }
         })
-    }
-
-    get me() {
-        return this.userService.user;
     }
 
     $onInit() {

@@ -1,38 +1,28 @@
+import { BaseController } from "../../app.base.controller";
+
 let sidebarHtml = require('./sidebar.html');
 let editProfileHTML = require('./editProfile.html');
 
-class SidebarCtrl {
+class SidebarCtrl extends BaseController {
     public showOffline = false;
     public tabState = "rooms";
     public showAdminLogin = true;
-    public defaultAvatar = this.userService.defaultAvatar;
     public showAddRoom: boolean = false;
 
-    static $inject = ['$scope', 'userService', 'chatService', '$state', '$stateParams', '$uibModal'];
+    static $inject = ['$injector', '$scope', '$state', '$stateParams', '$uibModal'];
 
     constructor(
+        $injector,
         private $scope: ng.IScope,
-        private userService,
-        private chatService,
         private $state: ng.ui.IStateService,
         private $stateParams: ng.ui.IStateParamsService,
         private $uibModal: ng.ui.bootstrap.IModalService
-    ) {}
+    ) {
+        super($injector);
+    }
 
     get roomName() {
         return this.$stateParams.roomName;
-    }
-
-    get me() {
-        return this.userService.user;
-    }
-
-    get users() {
-        return this.chatService.users;
-    }
-
-    get rooms() {
-        return this.chatService.rooms;
     }
 
     $onInit() {
