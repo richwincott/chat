@@ -7,7 +7,9 @@
         <div class="tab-content" ng-switch="$ctrl.tabState">
             <div ng-switch-when="rooms">
                 <div>
-                    <div class="close" ng-click="$ctrl.showAddRoom = !$ctrl.showAddRoom" style="float:initial; margin-left: 10px;"><i class="fa fa-plus"></i></div>
+                    <div class="close animate" ng-class="{'rotate': $ctrl.showAddRoom}" ng-click="$ctrl.showAddRoom = !$ctrl.showAddRoom" style="float:initial; margin-left: 10px; width: 21px; text-align: center;">
+                        <i class="fa fa-plus"></i>
+                    </div>
                     <add-room ng-if="$ctrl.showAddRoom"></add-room>
                     <br/>
                 </div>     

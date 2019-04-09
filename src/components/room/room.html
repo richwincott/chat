@@ -4,7 +4,7 @@
             <span ng-if="$ctrl.showDeleted">Hide</span>
             <span ng-if="!$ctrl.showDeleted">Show</span> deleted</a>
     </div>
-    <ul class="list-unstyled messages" style="flex: 100%;">
+    <ul class="list-unstyled messages" style="flex: 1;">
         <li ng-repeat="date in $ctrl.dates">
             <hr />
             <p class="text-center">{{date | date:'dd-MM-yyyy'}}</p>

@@ -63,13 +63,15 @@ export default class HomeCtrl extends BaseController {
 
     public forgetMe(id) {
         this.loginError = "";
-        this.ids.splice(this.ids.indexOf(id), 1);
-        delete this.loginUserList[id];
-        localStorage.setItem('ids', JSON.stringify(this.ids));
-        if (this.ids.length == 0) {
-            this.isExistingUser = false;
+        if (confirm('Are you sure?')) {
+            this.ids.splice(this.ids.indexOf(id), 1);
+            delete this.loginUserList[id];
+            localStorage.setItem('ids', JSON.stringify(this.ids));
+            if (this.ids.length == 0) {
+                this.isExistingUser = false;
+            }
+            this.selectedUser = null;
         }
-        this.selectedUser = null;
     }
 
     public login(id) {

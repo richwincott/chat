@@ -290,3 +290,14 @@ a {
         margin: 4px 0;
     }
 }
+
+.animate {
+    transition-duration: 0.25s;
+    transition-property: transform;
+
+    &.rotate {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform-origin: center;
+    }
+}
