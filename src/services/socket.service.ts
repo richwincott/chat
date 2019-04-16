@@ -10,7 +10,7 @@ export default class SocketService {
         private $rootScope,
         private config
     ) {
-        this._socket = new io(config.socketHostName ? config.socketHostName : window.location.hostname + ':' + config.socketPort);
+        this._socket = new io((config.socketHostName ? config.socketHostName : window.location.hostname) + ':' + config.socketPort);
     }
 
     public socket() {
