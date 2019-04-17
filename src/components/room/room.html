@@ -25,7 +25,7 @@
                 </tr>
             </table>
         </li>
-        <li ng-if="$ctrl.messages.length == 0" class="text-center">
+        <li ng-if="$ctrl.messages.length == 0 || $ctrl.allMessagesDeleted()" class="text-center">
             <br/><br/>
             <p>There are no messages in this room yet..</p>
         </li>

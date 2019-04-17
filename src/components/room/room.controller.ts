@@ -141,6 +141,16 @@ export default class RoomCtrl extends BaseController {
         this.chatService.formatMessages(true);
     }
 
+    public allMessagesDeleted() {
+        let result = true;
+        this.messages.forEach((message) => {
+            if (!message.deleted) {
+                result = false;
+            }
+        });
+        return result;
+    }
+
     public openUploadDialog() {
         this.simulateClick(document.getElementsByClassName("pictureUpload").item(0));
     }
