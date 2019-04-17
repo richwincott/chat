@@ -53,6 +53,7 @@ export default class ChatService {
         this.socketService.socket().on('new-message', (data) => {
             this.messages.push(data);
             this.formatMessages();
+            this.$rootScope.$broadcast('scroll-to-bottom');
             this.$rootScope.$apply();
         })
 
@@ -105,6 +106,7 @@ export default class ChatService {
         this.socketService.request('fetch-messages', roomName).then((data) => {
             this.messages = data;
             this.formatMessages();
+            this.$rootScope.$broadcast('scroll-to-bottom');
         });
     }
 

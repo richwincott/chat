@@ -42,7 +42,7 @@
             </div>
         </div>
         <div style="display: inline-block; color: #888; font-size: 13px; padding: 3px 5px;">
-            <span ng-repeat="userId in $ctrl.typing">{{$ctrl.users[userId].userName.split('/')[0]}} is typing... </span>
+            <span ng-repeat="userId in $ctrl.typing track by $index">{{$ctrl.users[userId].userName.split('/')[0]}} is typing... </span>
         </div>
         <div class="input-group">
             <input class="form-control" ng-model="$ctrl.message" ng-change="$ctrl.userTyping()" placeholder="Type a message or paste an image url, /giphy {search} works too!" />
