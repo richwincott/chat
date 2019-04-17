@@ -318,7 +318,7 @@ io.on('connection', function(socket){
         })
 
         socket.on("new-room", function (newRoomName) {
-            io.emit('new-room', newRoomName);
+            io.emit('new-room', {name: newRoomName});
             var newRoomInstance = new roomModel({name: newRoomName});
             save(newRoomInstance);
         })
