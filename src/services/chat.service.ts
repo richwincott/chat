@@ -4,6 +4,8 @@ export default class ChatService {
     public rooms;
     public dates = [];
     public typing = [];
+    public acceptedNotifications = false;
+    public focused = true;
 
     static $inject = ["$rootScope", "socketService", "userService", "$timeout"];
 
@@ -13,6 +15,21 @@ export default class ChatService {
         private userService,
         private $timeout: ng.ITimeoutService
     ) {
+        Notification.requestPermission().then((result) => {
+            if (result === 'granted') {
+                this.acceptedNotifications = true;
+                this.$rootScope.$apply();
+            }
+        });
+
+        window.onfocus = () => {
+            this.focused = true;
+        };
+
+        window.onblur = () => {
+            this.focused = false;
+        };
+
         // requests
         this.socketService.request('fetch-users').then((users) => {
             this.users = users;
@@ -52,6 +69,7 @@ export default class ChatService {
 
         this.socketService.socket().on('new-message', (data) => {
             this.messages.push(data);
+            this.spawnNotification(data);
             this.formatMessages();
             this.$rootScope.$broadcast('scroll-to-bottom');
             this.$rootScope.$apply();
@@ -112,6 +130,16 @@ export default class ChatService {
 
     public userIsTyping() {
         this.socketService.request('user-typing');
+    }
+
+    spawnNotification = (data) => {
+        if (this.acceptedNotifications && data.userId !== this.userService.user.id && !this.focused) {
+            var options = {
+                body: data.message,
+                icon: this.users[data.userId].avatar
+            };
+            var n = new Notification('New message from ' + this.users[data.userId].userName.split('/')[0] + '!', options);
+        }
     }
 
     public formatMessages() {
