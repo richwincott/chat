@@ -5,7 +5,7 @@
             <span ng-if="!$ctrl.showDeleted">Show</span> deleted</a>
     </div>
     <ul class="list-unstyled messages" style="flex: 1;">
-        <li ng-repeat="date in $ctrl.dates">
+        <li ng-if="!$ctrl.allMessagesDeleted() || $ctrl.showDeleted" ng-repeat="date in $ctrl.dates">
             <hr />
             <p class="text-center">{{date | date:'dd-MM-yyyy'}}</p>
             <table class="table borderless">
@@ -25,7 +25,7 @@
                 </tr>
             </table>
         </li>
-        <li ng-if="$ctrl.messages.length == 0 || $ctrl.allMessagesDeleted()" class="text-center">
+        <li ng-if="$ctrl.messages.length == 0 || ($ctrl.allMessagesDeleted() && !$ctrl.showDeleted)" class="text-center">
             <br/><br/>
             <p>There are no messages in this room yet..</p>
         </li>

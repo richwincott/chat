@@ -1,8 +1,4 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var path = require('path');
+var io = require('socket.io')();
 var mongoose = require('mongoose');
 
 var seed = 1000;
@@ -11,8 +7,8 @@ var seed = 1000;
 var mongoose = require('mongoose');
 
 //Set up default mongoose connection
-var mongoDB = 'mongodb://127.0.0.1/chat';
-mongoose.connect(mongoDB, { useNewUrlParser: true });
+var mongoUrl = 'mongodb://127.0.0.1/chat';
+mongoose.connect(mongoUrl, { useNewUrlParser: true });
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
 //Get the default connection
@@ -20,7 +16,6 @@ var mdb = mongoose.connection;
 
 //Bind connection to error event (to get notification of connection errors)
 mdb.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 
 // Define schema
 var Schema = mongoose.Schema;
@@ -135,8 +130,6 @@ function save(instance) {
 function handleError(err) {
     console.error(err);
 }
-
-app.use(express.static(path.join(__dirname, 'build')));
 
 io.on('connection', function(socket){
 
@@ -427,18 +420,6 @@ function roomExists(rooms, roomName) {
     return found ? true : false;
 }
 
-
-var stdin = process.stdin;
-
-http.listen(3004, function(){
+io.listen(3004, function(){
     console.log('listening on *:3004');
-
-    // handle input from stdin
-    stdin.resume(); // see http://nodejs.org/docs/v0.4.7/api/process.html#process.stdin
-    stdin.on('data', function(chunk) { // called on each line of input
-        var line=chunk.toString().replace(/\n/,'\\n');
-        console.log('stdin:received line:'+line);
-    }).on('end', function() { // called when stdin closes (via ^D)
-        console.log('stdin:closed');
-    });
 });
