@@ -3,14 +3,18 @@ const io = require('../../node_modules/socket.io-client');
 export default class SocketService { 
     private _socket;
 
-    static $inject = ["$q", "$rootScope", "config"];
+    static $inject = ["$q", "$interval", "config"];
 
     constructor(
         private $q,
-        private $rootScope,
+        private $interval,
         private config
     ) {
         this._socket = new io((config.socketHostName ? config.socketHostName : window.location.hostname) + ':' + config.socketPort);
+
+        $interval(() => {
+            this._socket.emit('ping');
+        }, 30 * 1000);
     }
 
     public socket() {
