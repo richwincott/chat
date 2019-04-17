@@ -5,11 +5,12 @@ export default class ChatService {
     public dates = [];
     public typing = [];
 
-    static $inject = ["$rootScope", "socketService", "$timeout"];
+    static $inject = ["$rootScope", "socketService", "userService", "$timeout"];
 
     constructor(
         private $rootScope,
         private socketService,
+        private userService,
         private $timeout: ng.ITimeoutService
     ) {
         // requests
@@ -103,7 +104,7 @@ export default class ChatService {
         this.dates = [];
         this.socketService.request('fetch-messages', roomName).then((data) => {
             this.messages = data;
-            this.formatMessages(true);
+            this.formatMessages();
         });
     }
 
@@ -111,12 +112,10 @@ export default class ChatService {
         this.socketService.request('user-typing');
     }
 
-    public formatMessages(clear?) {
-        if (clear) {
-            this.dates = [];
-        }
+    public formatMessages() {
+        this.dates = [];
         this.messages.forEach((message) => {
-            if (!message.deleted && this.dates.indexOf(message.dateTime.split('T')[0]) == -1) {
+            if ((!message.deleted || this.userService.user.admin) && this.dates.indexOf(message.dateTime.split('T')[0]) == -1) {
                 this.dates.push(message.dateTime.split('T')[0]);
             }
         })

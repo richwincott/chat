@@ -138,7 +138,7 @@ export default class RoomCtrl extends BaseController {
 
     public toggleDeleted() {
         this.showDeleted = !this.showDeleted
-        this.chatService.formatMessages(true);
+        this.chatService.formatMessages();
     }
 
     public allMessagesDeleted() {
