@@ -17,12 +17,12 @@
                     <li ng-if="room.name.split(':')[0] == $ctrl.me.id || (room.private && room.name.split(':')[1] == $ctrl.me.id) || !room.private" style="margin-bottom: 10px;" ng-repeat="room in $ctrl.rooms track by $index">
                         <button class="btn btn-red" ng-click="$ctrl.selectRoom(room.name)" data-dismiss="modal" ng-class="{'selected': room.name == $ctrl.roomName}">
                             <span ng-if="!room.private">
-                                {{room.name}}<br/>
+                                {{room.name}}
                             </span>
                             <span ng-if="room.private">
                                 {{$ctrl.userById(room.name.split(':')[0]).userName.split('/')[0]}} - {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}} &nbsp;<i class="fa fa-lock"></i>
                             </span>
-                            <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"><br/>New message!</span>
+                            <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"> &nbsp;<i class="fa fa-bells"></i></span>
                         </button>
                     </li>
                 </ul>

@@ -59,9 +59,12 @@ export default class RoomCtrl extends BaseController {
             this.me.currentRoom = "General";
             this.$state.go('index.home.room', {roomName: "General"});
         } else {
+            this.me.currentRoom = this.$stateParams.roomName;
             this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
             this.chatService.fetchMessages(this.$stateParams.roomName);
         }
+
+        this.chatService.roomByName(this.me.currentRoom).lastAccessed = new Date();
 
         this.$scope.$on('scroll-to-bottom', () => {
             this.scrollToBottom();

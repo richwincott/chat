@@ -13,8 +13,9 @@
             </ul>
         </div>
         <form ng-if="$ctrl.isExistingUser" ng-submit="$ctrl.login($ctrl.selectedUser.id)">
-            <div class="input-group">
-                <input class="form-control" type="password" ng-model="$ctrl.password" />
+            <div class="input-group" ng-style="{width: $ctrl.selectedUser.password ? '100%' : '60.75px'}">
+                <input ng-if="$ctrl.selectedUser.password" class="form-control" type="password" ng-model="$ctrl.password" />
+                <span ng-if="!$ctrl.selectedUser.password"><!-- bypasses first child group styling --></span>
                 <div class="input-group-addon">
                     <button class="btn" ng-click="$ctrl.login($ctrl.selectedUser.id)">Login</button>
                 </div>

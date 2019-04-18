@@ -69,13 +69,12 @@ class SidebarCtrl extends BaseController {
             return;
         }
 
-        this.roomByName(this.me.currentRoom).lastAccessed = new Date();
+        this.chatService.roomByName(this.me.currentRoom).lastAccessed = new Date();
 
         let params = {
             roomName: roomName,
             private: priv
         }
-        this.me.currentRoom = roomName;
         if (priv) {
             this.tabState = "rooms";
         }
@@ -104,16 +103,6 @@ class SidebarCtrl extends BaseController {
 
     public dateCheck(room) {
         return new Date(room.lastUpdate) > room.lastAccessed;
-    }
-
-    private roomByName(roomName) {
-        let match;
-        this.rooms.forEach((room) => {
-            if (room.name == roomName) {
-                match = room;
-            }
-        });
-        return match;
     }
 }
 

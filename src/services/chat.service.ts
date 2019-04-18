@@ -142,6 +142,16 @@ export default class ChatService {
         }
     }
 
+    private roomByName(roomName) {
+        let match;
+        this.rooms.forEach((room) => {
+            if (room.name == roomName) {
+                match = room;
+            }
+        });
+        return match;
+    }
+
     public formatMessages() {
         this.dates = [];
         this.messages.forEach((message) => {
