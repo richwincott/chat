@@ -142,7 +142,7 @@ export default class ChatService {
         }
     }
 
-    private roomByName(roomName) {
+    public roomByName(roomName) {
         let match;
         this.rooms.forEach((room) => {
             if (room.name == roomName) {

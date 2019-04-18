@@ -31,7 +31,7 @@ export default class HomeCtrl extends BaseController {
             this.me.currentRoom = "General";
             this.$state.go('index.home.room', {roomName: "General"});
         }
-
+        
         if (localStorage.getItem('ids') !== null) {
             this.ids = JSON.parse(localStorage.getItem('ids'));
             this.isExistingUser = true;

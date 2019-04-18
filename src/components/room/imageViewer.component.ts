@@ -25,7 +25,7 @@ class ImageViewer {
             controller: class InnerImageViewer extends BaseController {
                 public selected;
 
-                $inject: string[] = ['$injector', '$scope', 'id', 'type'];
+                static $inject: string[] = ['$injector', '$scope', 'id', 'type'];
                 
                 constructor(
                     $injector,

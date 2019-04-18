@@ -57,6 +57,7 @@ export default class RoomCtrl extends BaseController {
         
         if (!this.associatedUser(this.$stateParams.roomName)) {
             this.me.currentRoom = "General";
+            this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
             this.$state.go('index.home.room', {roomName: "General"});
         } else {
             this.me.currentRoom = this.$stateParams.roomName;

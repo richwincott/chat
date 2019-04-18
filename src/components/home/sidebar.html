@@ -22,7 +22,7 @@
                             <span ng-if="room.private">
                                 {{$ctrl.userById(room.name.split(':')[0]).userName.split('/')[0]}} - {{$ctrl.userById(room.name.split(':')[1]).userName.split('/')[0]}} &nbsp;<i class="fa fa-lock"></i>
                             </span>
-                            <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"> &nbsp;<i class="fa fa-bells"></i></span>
+                            <span ng-if="$ctrl.dateCheck(room) && $ctrl.me.currentRoom != room.name"> &nbsp;<i class="fa fa-bell"></i></span>
                         </button>
                     </li>
                 </ul>
