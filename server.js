@@ -7,7 +7,7 @@ var seed = 1000;
 var mongoose = require('mongoose');
 
 //Set up default mongoose connection
-var mongoUrl = 'mongodb://127.0.0.1/chat';
+var mongoUrl = MONGOLAB_URI;
 mongoose.connect(mongoUrl, { useNewUrlParser: true });
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
@@ -420,6 +420,6 @@ function roomExists(rooms, roomName) {
     return found ? true : false;
 }
 
-io.listen(3004, function(){
+io.listen(process.env.PORT || 8181, function(){
     console.log('listening on *:3004');
 });
