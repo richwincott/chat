@@ -1,5 +1,5 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -37,23 +37,20 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                include: [
+                /* include: [
                     path.join(__dirname, 'src')
+                ], */
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: process.env.NODE_ENV === 'development',
+                        },
+                    },
+                    'css-loader',
+                    'sass-loader'
                 ],
-                use: ExtractTextPlugin.extract({
-                    use: [{
-                            loader: "css-loader", options: {
-                                sourceMap: true
-                            }
-                        }, {
-                            loader: "sass-loader", options: {
-                                sourceMap: true
-                            }
-                        }
-                    ],
-                    fallback: "style-loader"
-                }),
-                exclude: [/node_modules/, /build/]
+                exclude: [/build/]
             },
             {
                 test: /\.(png|jpg|gif|ttf|otf|woff|woff2|eot|svg)$/,
@@ -89,7 +86,7 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin('build', {}),
-        new ExtractTextPlugin({
+        new MiniCssExtractPlugin({
             filename: './../css/[name].[chunkhash].css'
         }),
         new HtmlWebpackPlugin({
