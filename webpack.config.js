@@ -48,6 +48,7 @@ module.exports = {
                         },
                     },
                     'css-loader',
+                    'resolve-url-loader',
                     'sass-loader'
                 ],
                 exclude: [/build/]
