@@ -4,6 +4,7 @@ import Config from './app.config';
 import SocketService from './services/socket.service';
 import UserService from './services/user.service';
 import ChatService from './services/chat.service';
+//import './styles/index.scss';
 
 declare var angular: any;
 

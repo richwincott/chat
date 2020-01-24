@@ -1,4 +1,5 @@
 import { BaseController } from "../../app.base.controller";
+import ISocketService from "../../services/socket.service";
 
 export default class HomeCtrl extends BaseController {
     public loggedIn = false;
@@ -20,7 +21,7 @@ export default class HomeCtrl extends BaseController {
         $injector,
         private $scope: ng.IScope,
         private $state: ng.ui.IStateService,
-        private socketService,
+        private socketService: ISocketService,
         private $uibModal: ng.ui.bootstrap.IModalService
     ) {
         super($injector);
@@ -104,7 +105,9 @@ export default class HomeCtrl extends BaseController {
         if (this.userName && this.userName.length > 0) {
             this.isLoading = true;
             this.signUpError = "";
-            this.socketService.socket().emit('new-user', { username: this.userName }, (data) => {
+            console.log('before')
+            this.socketService.request('new-user', { username: this.userName }).then((data) => {
+                console.log('after')
                 if (data) {
                     this.loggedIn = true;
                     this.isLoading = false;

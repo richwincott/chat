@@ -7,8 +7,7 @@ var seed = 1000;
 var mongoose = require('mongoose');
 
 //Set up default mongoose connection
-var mongoUrl = MONGOLAB_URI;
-mongoose.connect(mongoUrl, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/chat', { useNewUrlParser: true });
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
 //Get the default connection
@@ -131,7 +130,7 @@ function handleError(err) {
     console.error(err);
 }
 
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
 
     socket.on('login', (data, callback) => {
         fetchUsers().then((users) => {
@@ -174,8 +173,10 @@ io.on('connection', function(socket){
             fetchUsers().then((users) => {
                 let found = false;
                 for (let key in users) {
-                    if (users[key].userName.split("/")[0].toLowerCase() == userNameToCheck.toLowerCase()) {
-                        found = true;
+                    if (users[key].userName) {
+                        if (users[key].userName.split("/")[0].toLowerCase() == userNameToCheck.toLowerCase()) {
+                            found = true;
+                        }
                     }
                 };
                 resolve(found);

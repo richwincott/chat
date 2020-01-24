@@ -1,7 +1,14 @@
+import { Socket } from "socket.io";
+
 const io = require('../../node_modules/socket.io-client');
 
-export default class SocketService { 
-    private _socket;
+export default interface ISocketService {
+    socket(): Socket;
+    request(event: String, data?: any): Promise<any>;
+}
+
+export default class SocketService implements ISocketService { 
+    private _socket: Socket;
 
     static $inject = ["$q", "$interval", "config"];
 
@@ -17,11 +24,11 @@ export default class SocketService {
         }, 30 * 1000);
     }
 
-    public socket() {
+    public socket(): Socket {
         return this._socket;
     }
 
-    public request(event, data?) {
+    public request(event, data?): Promise<any> {
         var defer = this.$q.defer();
         this.socket().emit(event, data, function(d) {
             defer.resolve(d);

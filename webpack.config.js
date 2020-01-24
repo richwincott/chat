@@ -36,11 +36,12 @@ module.exports = {
                 exclude: [/node_modules/]
             },
             {
-                test: /\.scss$/,
-                /* include: [
-                    path.join(__dirname, 'src')
-                ], */
+                test: /\.(s*)css$/,
                 use: [
+                    
+                    
+                    
+                    'style-loader',                    
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
@@ -48,8 +49,16 @@ module.exports = {
                         },
                     },
                     'css-loader',
-                    'resolve-url-loader',
-                    'sass-loader'
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            "includePaths": [
+                                path.resolve(__dirname, 'src'),
+                                path.resolve(__dirname, 'node_modules')
+                            ]
+                        }
+                    },
+                    
                 ],
                 exclude: [/build/]
             },
@@ -77,7 +86,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: [ '.ts', '.js', '.scss', '.css' ]
+        extensions: [ '.ts', '.js', '.scss', '.css', '.svg']
     },
     node: {
         fs: "empty"
