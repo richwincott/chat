@@ -9,6 +9,7 @@ export default class EditProfile extends BaseController {
         base64: ""
     };
     public adminKey;
+    public newPassword = '';
 
     static $inject = ['$injector', '$scope', 'socketService', '$timeout', 'showAdminLogin'];
 
@@ -39,8 +40,9 @@ export default class EditProfile extends BaseController {
     }
 
     public setPassword() {
-        if (this.me.password.length > 0) {
-            this.socketService.socket().emit('set-password', this.me.password)
+        if (this.newPassword.length > 0) {
+            this.socketService.socket().emit('set-password', this.newPassword)
+            this.newPassword = '';
         }
     }
 

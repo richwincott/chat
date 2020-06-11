@@ -102,7 +102,8 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject: false,
             template: './src/index.html',
-            filename: '../index.html'
+            filename: '../index.html',
+			baseUrl: '../chat/'
         }),
         new WebpackMd5Hash(),
         new WriteFilePlugin(),

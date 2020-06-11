@@ -5,6 +5,6 @@ import { ImageViewerComponent } from './imageViewer.component';
 declare var angular: any;
 
 export default angular.module('room', [])
-    .config(RoomConfig)
+    .component('imageViewer', ImageViewerComponent)    
     .controller('RoomCtrl', RoomCtrl)
-    .component('imageViewer', ImageViewerComponent)
+    .config(RoomConfig);

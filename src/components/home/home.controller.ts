@@ -2,13 +2,13 @@ import { BaseController } from "../../app.base.controller";
 import ISocketService from "../../services/socket.service";
 
 export default class HomeCtrl extends BaseController {
-    public loggedIn = false;
-    public isLoading = true;
+    public loggedIn: Boolean = false;
+    public isLoading: Boolean = true;
 
-    public userName;
-    public ids = [];
-    public password = "";
-    public isExistingUser: boolean = false;
+    public userName: String;
+    public ids: number[] = [];
+    public password: String = "";
+    public isExistingUser: Boolean = false;
     public loginUserList = {};
     public selectedUser;
 
@@ -32,17 +32,21 @@ export default class HomeCtrl extends BaseController {
             this.me.currentRoom = "General";
             this.$state.go('index.home.room', {roomName: "General"});
         }
-        
-        if (localStorage.getItem('ids') !== null) {
-            this.ids = JSON.parse(localStorage.getItem('ids'));
+        let ls_ids = localStorage.getItem('ids');
+        if (ls_ids !== null ) {
+            this.ids = JSON.parse(ls_ids);
             this.isExistingUser = true;
+            let i = 0;
             this.ids.forEach((id) => {
+                i++;
                 this.socketService.request('fetch-user', id).then((user) => {
                     this.loginUserList[id] = user;
                     if (this.ids.length == 1) {
                         this.selectedUser = user;
                     }
-                    this.isLoading = false;
+                    if (i == this.ids.length) {
+                        this.isLoading = false;
+                    }
                 })
             })
         } else {

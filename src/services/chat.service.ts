@@ -15,12 +15,16 @@ export default class ChatService {
         private userService,
         private $timeout: ng.ITimeoutService
     ) {
-        Notification.requestPermission().then((result) => {
-            if (result === 'granted') {
-                this.acceptedNotifications = true;
-                this.$rootScope.$apply();
-            }
-        });
+        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window['MSStream'];
+
+        if (!iOS) {
+            Notification.requestPermission().then((result) => {
+                if (result === 'granted') {
+                    this.acceptedNotifications = true;
+                    this.$rootScope.$apply();
+                }
+            });
+        }
 
         window.onfocus = () => {
             this.focused = true;
@@ -138,6 +142,7 @@ export default class ChatService {
                 body: data.message,
                 icon: this.users[data.userId].avatar
             };
+            console.log("notification");
             var n = new Notification('New message from ' + this.users[data.userId].userName.split('/')[0] + '!', options);
         }
     }

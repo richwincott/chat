@@ -7,8 +7,8 @@ import { AddRoomComponent } from './addRoom.component';
 declare var angular: any;
 
 export default angular.module('home', [])
-    .config(HomeConfig)
+    .component('sidebar', SidebarComponent)
+    .component('addRoom', AddRoomComponent)    
     .controller('HomeCtrl', HomeCtrl)
     .controller('EditProfileCtrl', EditProfileCtrl)
-    .component('sidebar', SidebarComponent)
-    .component('addRoom', AddRoomComponent);
+    .config(HomeConfig);

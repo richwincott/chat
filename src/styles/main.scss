@@ -4,6 +4,14 @@ body {
 }
 
 @media (min-width: 992px) {
+    body {
+        margin: 20px 0px;
+    }
+
+    .uiview {
+        height: calc(100vh - 60px);
+    }
+
     .sidebar.modal-body {
         padding: 0 !important;
     }
@@ -29,6 +37,10 @@ body {
 @media (max-width: 991px) {
     body {
         margin: 0;
+    }
+
+    .uiview {
+        height: calc(100vh - 20px);
     }
 
     form.no-margin {
@@ -205,7 +217,7 @@ h5 {
 .users-list,
 .room-list {
     //max-height: calc(100% - 195px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .faint {
@@ -284,6 +296,8 @@ a {
     border-top-right-radius: 10px;
     border: 1px solid #ddd;
     border-bottom: none;
+    position: absolute;
+    bottom: 36px;
 
     .gif {
         margin: 4px 0;

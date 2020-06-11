@@ -17,7 +17,14 @@ export default class SocketService implements ISocketService {
         private $interval,
         private config
     ) {
-        this._socket = new io((config.socketHostName ? config.socketHostName : window.location.hostname) + ':' + config.socketPort);
+        //this._socket = new io((config.socketHostName ? config.socketHostName : window.location.hostname) + ':' + config.socketPort);
+		
+		var address = window.location.protocol + '//' + window.location.host;  
+		var details = {  
+			path: '/chat/socket.io'		
+		};
+		
+		this._socket = io.connect(address, details); 	
 
         $interval(() => {
             this._socket.emit('ping');

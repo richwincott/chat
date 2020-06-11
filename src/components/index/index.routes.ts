@@ -5,7 +5,7 @@ IndexConfig.$inject = ["$stateProvider"];
 function IndexConfig($stateProvider) {
     $stateProvider
       .state('index', {
-        templateUrl: HTML
+        templateUrl: HTML,
       });
 };
 

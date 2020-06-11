@@ -19,7 +19,7 @@
                             </div>
                             <span ng-style="{color: $ctrl.users[message.userId].userName.split('/')[1]}">{{$ctrl.users[message.userId].userName.split('/')[0]}}</span><br/>
                             <div ng-if="message.type == 'text'">{{message.message}} <span ng-if="message.edited" class="faint">(edited)</span></div>
-                            <div ng-if="message.type == 'image'"><img ng-src="{{message.message}}" ng-click="$ctrl.openImage(message)" style="cursor:pointer; max-width:100%; margin-top:5px;" /></div>
+                            <div ng-if="message.type == 'image'"><br/><img ng-src="{{message.message}}" ng-click="$ctrl.openImage(message)" style="cursor:zoom-in; max-width:100%; margin-top:5px; border-radius: 4px; height: 50%;" /></div>
                         </div>
                     </td>
                 </tr>

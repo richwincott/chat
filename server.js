@@ -1,4 +1,10 @@
-var io = require('socket.io')();
+var virtualDirPath = process.env.virtualDirPath;
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http, { 
+	path: virtualDirPath + '/socket.io',
+});
 var mongoose = require('mongoose');
 
 var seed = 1000;
@@ -78,7 +84,7 @@ function fetchMessages() {
     })
 }
 
-function fetchUsers() {
+function fetchUsers(withPassword = false) {
     return new Promise((resolve, reject) => {
         userModel.find({}, function(err, _users) {
             if (err) handleError(err);
@@ -86,6 +92,14 @@ function fetchUsers() {
             let users = {};
 
             _users.forEach(user => {
+                if (!withPassword) {
+                    if (user.password) {
+                        user.password = 'nothing to see here';
+                    }
+                    else {
+                        user.password = undefined;
+                    }
+                }
                 users[user.id] = user;
             });
 
@@ -133,9 +147,17 @@ function handleError(err) {
 io.on('connection', function(socket) {
 
     socket.on('login', (data, callback) => {
-        fetchUsers().then((users) => {
+        fetchUsers(true).then((users) => {
             if (users[data.id]) {
                 if (Buffer.from(users[data.id].password, 'base64').toString() === data.password) {
+                    for (var id in users) {
+                        if (users[id].password) {
+                            users[id].password = 'nothing to see here';
+                        }
+                        else {
+                            users[id].password = undefined;
+                        }
+                    };
                     users[data.id].online = true;
                     authenticated();
                     socket.userId = data.id;
@@ -226,7 +248,8 @@ io.on('connection', function(socket) {
 
     socket.on("fetch-user", function (data, callback) {
         fetchUsers().then((users) => {
-            callback(users[data]);
+            let user = users[data];
+            callback(user);
         });
     });
 
@@ -421,6 +444,13 @@ function roomExists(rooms, roomName) {
     return found ? true : false;
 }
 
-io.listen(process.env.PORT || 8181, function(){
-    console.log('listening on *:3004');
+app.use(virtualDirPath, express.static(__dirname + '/build'));
+
+app.get(virtualDirPath + '/', function(req, res) {
+    res.sendFile(__dirname + '/build/index.html');
+});
+
+var port = process.env.PORT || 8181;
+http.listen(port, function() {
+    console.log('listening on *:' + port);
 });
