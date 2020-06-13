@@ -320,14 +320,16 @@ io.on('connection', function(socket) {
             })
         });
 
-        socket.on('join', function (roomName, private) {
+        socket.on('join', function (roomName, private, callback) {
             fetchRooms().then((rooms) => {
                 fetchUsers().then((users) => {
                     if (!roomExists(rooms, roomName)) {
                         let newRoom = {name: roomName, private: private}
-                        io.emit('new-room', newRoom);
+                        socket.broadcast.emit('new-room', newRoom);
                         var newRoomInstance = new roomModel(newRoom);
                         save(newRoomInstance);
+                        if (callback)
+                            callback(newRoom);
                     }
                     users[socket.userId].currentRoom = roomName;
                     io.emit("users", users);

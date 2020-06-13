@@ -69,7 +69,7 @@ class SidebarCtrl extends BaseController {
             return;
         }
 
-        this.chatService.roomByName(this.me.currentRoom).lastAccessed = new Date();
+        //this.chatService.roomByName(this.me.currentRoom).lastAccessed = new Date();
 
         let params = {
             roomName: roomName,

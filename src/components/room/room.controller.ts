@@ -56,16 +56,23 @@ export default class RoomCtrl extends BaseController {
         this.userTooltip = userTooltip;
         
         if (!this.associatedUser(this.$stateParams.roomName)) {
+            // joining existing room
             this.me.currentRoom = "General";
             this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
             this.$state.go('index.home.room', {roomName: "General"});
         } else {
             this.me.currentRoom = this.$stateParams.roomName;
-            this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private);
+            this.socketService.socket().emit('join', this.$stateParams.roomName, this.$stateParams.private, (room) => {
+                room.lastAccessed = new Date();
+                this.chatService.messages = [];
+                this.chatService.rooms.push(room);
+            });
             this.chatService.fetchMessages(this.$stateParams.roomName);
         }
 
-        this.chatService.roomByName(this.me.currentRoom).lastAccessed = new Date();
+        let _room = this.chatService.roomByName(this.me.currentRoom)
+        if (_room)
+            _room.lastAccessed = new Date();
 
         this.$scope.$on('scroll-to-bottom', () => {
             this.scrollToBottom();
@@ -146,7 +153,7 @@ export default class RoomCtrl extends BaseController {
 
     public toggleDeleted() {
         this.showDeleted = !this.showDeleted
-        this.chatService.formatMessages();
+        this.chatService.formatMessages(this.showDeleted);
     }
 
     public allMessagesDeleted() {

@@ -45,7 +45,7 @@
             <span ng-repeat="userId in $ctrl.typing track by $index">{{$ctrl.users[userId].userName.split('/')[0]}} is typing... </span>
         </div>
         <div class="input-group">
-            <input class="form-control" ng-model="$ctrl.message" ng-change="$ctrl.userTyping()" placeholder="Type a message or paste an image url, /giphy {search} works too!" />
+            <input class="form-control" ng-model="$ctrl.message" ng-change="$ctrl.userTyping()" placeholder="Type a message or paste an image url, /giphy {query} works too!" />
             <div class="input-group-addon">
                 <button type="button" class="btn" ng-click="$ctrl.openUploadDialog();">
                     <input class="pictureUpload" type='file' style="display:none;" ng-model='$ctrl.uploadedPictureObject' base-sixty-four-input>

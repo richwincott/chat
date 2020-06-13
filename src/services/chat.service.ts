@@ -6,6 +6,7 @@ export default class ChatService {
     public typing = [];
     public acceptedNotifications = false;
     public focused = true;
+    public showingDeleted = false;
 
     static $inject = ["$rootScope", "socketService", "userService", "$timeout"];
 
@@ -157,10 +158,13 @@ export default class ChatService {
         return match;
     }
 
-    public formatMessages() {
+    public formatMessages(showDeleted?) {
+        if (showDeleted !== null) {
+            this.showingDeleted = showDeleted;
+        }
         this.dates = [];
         this.messages.forEach((message) => {
-            if ((!message.deleted || this.userService.user.admin) && this.dates.indexOf(message.dateTime.split('T')[0]) == -1) {
+            if ((!message.deleted || this.showingDeleted) && this.dates.indexOf(message.dateTime.split('T')[0]) == -1) {
                 this.dates.push(message.dateTime.split('T')[0]);
             }
         })
