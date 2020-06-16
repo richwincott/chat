@@ -14,15 +14,18 @@ export default class HomeCtrl extends BaseController {
 
     public signUpError;
     public loginError;
+    public width = 0;
     
-    static $inject = ["$injector", "$scope", "$state", "socketService", "$uibModal"];
+    static $inject = ["$injector", "$rootScope", "$scope", "$state", "socketService", "$uibModal", "$timeout"];
 
     constructor(
         $injector,
+        private $rootScope: ng.IRootScopeService,
         private $scope: ng.IScope,
         private $state: ng.ui.IStateService,
         private socketService: ISocketService,
-        private $uibModal: ng.ui.bootstrap.IModalService
+        private $uibModal: ng.ui.bootstrap.IModalService,
+        private $timeout: ng.ITimeoutService
     ) {
         super($injector);
     }
@@ -66,6 +69,14 @@ export default class HomeCtrl extends BaseController {
         });
     }
 
+    public setWidth() {
+        this.$timeout(() => {
+            this.$rootScope.$broadcast('sidebar-toggled');
+            let roomContainer = document.getElementById("room");
+            this.width = window.innerWidth > 991 ? roomContainer.clientWidth - 20 : roomContainer.clientWidth;
+        })
+    }
+
     public forgetMe(id) {
         this.loginError = "";
         if (confirm('Are you sure?')) {
@@ -93,6 +104,15 @@ export default class HomeCtrl extends BaseController {
                     
                     data.password = atob(data.password);
                     this.userService.setUser(data);
+
+                    this.$timeout(() => {
+                        let roomContainer = document.getElementById("room");      
+                        this.width = window.innerWidth > 991 ? roomContainer.clientWidth - 20 : roomContainer.clientWidth;
+                        window.addEventListener("resize", (ev: UIEvent) =>{
+                            this.width = window.innerWidth > 991 ? roomContainer.clientWidth - 20 : roomContainer.clientWidth;
+                            this.$scope.$apply();
+                        })
+                    }, 0)
                 } else {
                     this.isLoading = false;
                     this.loginError = "Incorrect password, please try again.";

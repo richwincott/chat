@@ -1,9 +1,10 @@
-<div style="display: flex; flex-direction: column; width: 100%;">
-    <div style="height: 40px; margin-bottom: 7px;">
+<div id="room-container" style="display: flex; flex-direction: column; width: 100%;">
+    <div class="top-padding" style="height: 40px; margin-bottom: 7px; position: fixed; top: 0px; z-index: 100;">
         <a class="btn btn-default" ng-if="$ctrl.me.admin" ng-click="$ctrl.toggleDeleted()">
             <span ng-if="$ctrl.showDeleted">Hide</span>
             <span ng-if="!$ctrl.showDeleted">Show</span> deleted</a>
     </div>
+
     <ul class="list-unstyled messages" style="flex: 1;">
         <li ng-if="!$ctrl.allMessagesDeleted() || $ctrl.showDeleted" ng-repeat="date in $ctrl.dates">
             <hr />
@@ -31,7 +32,7 @@
         </li>
     </ul>
 
-    <form ng-submit="$ctrl.send()" class="no-margin bottom">
+    <form ng-submit="$ctrl.send()" class="no-margin bottom bottom-padding" ng-style="{width: $ctrl.width + 'px'}">
         <div class="giphy-container" ng-if="$ctrl.giphy_show">
             <div class="text-center" style="width: 200px; text-overflow: ellipsis;">{{$ctrl.gif.title}}</div>
             <img class="gif" ng-src="{{$ctrl.gif.images.fixed_width.url}}" />

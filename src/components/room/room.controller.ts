@@ -29,6 +29,7 @@ export default class RoomCtrl extends BaseController {
     public giphy_show = false;
 
     private lastKeyPress = this.moment();
+    public width = 0;
 
     static $inject = ["$injector", "$scope", "$http", "$state", "$stateParams", "$timeout", "socketService", "config", "moment"];
 
@@ -76,7 +77,21 @@ export default class RoomCtrl extends BaseController {
 
         this.$scope.$on('scroll-to-bottom', () => {
             this.scrollToBottom();
-        })
+        });
+
+        this.$scope.$on('sidebar-toggled', () => {
+            let roomContainer = document.getElementById("room-container");
+            this.width = roomContainer.clientWidth;
+        });
+
+        this.$timeout(() => {
+            let roomContainer = document.getElementById("room-container");
+            this.width = roomContainer.clientWidth;
+            window.addEventListener("resize", (ev: UIEvent) =>{
+                this.width = roomContainer.clientWidth;
+                this.$scope.$apply();
+            })
+        });
     }
 
     public userTyping() {

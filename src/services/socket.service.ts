@@ -21,7 +21,7 @@ export default class SocketService implements ISocketService {
 		
 		var address = window.location.protocol + '//' + window.location.host;  
 		var details = {  
-			path: '/chat/socket.io'		
+			path: process.env.NODE_ENV === 'development' ? '/socket.io' : '/chat/socket.io'		
 		};
 		
 		this._socket = io.connect(address, details); 	

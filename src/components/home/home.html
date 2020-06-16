@@ -41,9 +41,11 @@
     </div>
 </div>
 <div ng-if="$ctrl.loggedIn" style="display: flex;" ng-init="showSidebar = true">
-    <div id="room" class="padding" ng-style="{flex: showSidebar ? 9 : 1}">          
-        <a ng-click="showSidebar = !showSidebar" class="btn btn-default sidebar-toggle hidden-xs hidden-sm">Toggle sidebar</a>
-        <a ng-click="$ctrl.openSidebar()" class="btn btn-default sidebar-toggle hidden-md hidden-lg">Open sidebar</a>
+    <div id="room" class="padding" ng-style="{flex: showSidebar ? 9 : 1}" >
+        <div class="top-padding" ng-style="{width: $ctrl.width + 'px'}" style="position: fixed; top: 0px; text-align: right; z-index: 100; background-color: #fff;">
+            <a ng-click="showSidebar = !showSidebar; $ctrl.setWidth();" class="btn btn-default sidebar-toggle hidden-xs hidden-sm">Toggle sidebar</a>
+            <a ng-click="$ctrl.openSidebar()" class="btn btn-default sidebar-toggle hidden-md hidden-lg">Open sidebar</a>
+        </div>      
         <div class="uiview" ui-view style="display: flex; width: 100%; top: -40px; position: relative; margin-bottom: -40px;"></div>
     </div>
     <sidebar class="hidden-xs hidden-sm padding" ng-style="{flex: showSidebar ? 3 : 0, display: !showSidebar ? 'none' : 'flex'}"></sidebar> 

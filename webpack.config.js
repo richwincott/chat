@@ -103,7 +103,7 @@ module.exports = {
             inject: false,
             template: './src/index.html',
             filename: '../index.html',
-			baseUrl: '../chat/'
+			baseUrl: process.env.NODE_ENV === 'development' ? '' : '../chat/'
         }),
         new WebpackMd5Hash(),
         new WriteFilePlugin(),
@@ -111,8 +111,9 @@ module.exports = {
             jQuery: 'jquery'
         }),
     ],
-    devServer: {
+    watch: process.env.NODE_ENV === 'development',
+    /* devServer: {  //"webpack-dev-server --host 0.0.0.0 --mode development"
         contentBase: path.resolve(__dirname, 'build'),
         port: process.env.PORT || 3000
-    },
+    }, */
 };  

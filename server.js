@@ -1,4 +1,4 @@
-var virtualDirPath = process.env.virtualDirPath;
+var virtualDirPath = process.env.virtualDirPath || '';
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);

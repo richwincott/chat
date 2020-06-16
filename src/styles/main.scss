@@ -1,11 +1,13 @@
 body {
     overflow-x: hidden;
+    overflow-y: scroll;
     overscroll-behavior: none;
+    background-color: #fff;
 }
 
 @media (min-width: 992px) {
     body {
-        margin: 20px 0px;
+        margin: 20px 0px 20px 0px;
     }
 
     .uiview {
@@ -73,6 +75,17 @@ body {
         .tab-content {
             padding-top: 8px;
         }
+    }
+}
+
+form.bottom {
+    position: fixed;
+    bottom: -2px;
+    padding: 10px 0px 20px 0px;
+    background-color: #fff;
+
+    @media (min-width: 992px) {
+        padding: 10px 0px 30px 0px !important;
     }
 }
 
@@ -224,23 +237,31 @@ h5 {
     opacity: .3;
 }
 
-sidebar {
-    &::before {
-        position: absolute;
-        content: '';
-        height: 100%;
-        width: 100%;
-        z-index: -1;
-        background-color: #f8f8f8;
-        right: auto;
-        top: 0;
-        margin-left: -7px;
+.sidebar-fixed {
+    @media (min-width: 992px) {
+        &::before {
+            position: absolute;
+            content: '';
+            height: 100vh;
+            width: 100vw;
+            z-index: -1;
+            background-color: #f8f8f8;
+            right: auto;
+            top: -30px;
+            margin-left: -7px;
+        }
     }
 }
 
 .sidebar {
     background-color: #f8f8f8;
     overflow: hidden;
+    height: calc(100vh - 55px);
+    width: 100%;
+
+    @media (min-width: 992px) {
+        max-width: 275px;
+    }
 }
 
 .sidebar-toggle {
@@ -260,8 +281,9 @@ sidebar {
 }
 
 .messages {
-    overflow-y: scroll;
-    padding-right: 12px;
+    //overflow-y: scroll;
+    //padding-right: 12px;
+    padding-top: 74px;
 }
 
 .modal-body {
@@ -312,5 +334,13 @@ a {
         transform: rotate(45deg);
         -webkit-transform: rotate(45deg);
         transform-origin: center;
+    }
+}
+
+.top-padding {
+    padding: 10px 0px 12px 0px;
+
+    @media (min-width: 992px) {
+        padding: 30px 0px 12px 0px;
     }
 }
